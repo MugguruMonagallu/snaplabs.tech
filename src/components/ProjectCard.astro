@@ -1,0 +1,195 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  featured?: boolean;
+}
+
+const { project, featured = false } = Astro.props;
+const { title, category, tagline, description, status, url, repoUrl, tags, icon } = project.data;
+---
+
+{featured ? (
+  <article class="editorial-card rounded-2xl p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative overflow-hidden group">
+    <div class="lg:col-span-7 bg-black/60 rounded-xl border border-white/10 p-6 flex flex-col justify-between min-h-[300px] relative overflow-hidden group-hover:border-white/20 transition-colors">
+      <div class="absolute -right-16 -top-16 w-56 h-56 bg-[#e11d48]/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="flex items-center justify-between border-b border-white/[0.08] pb-4 text-xs font-mono text-zinc-400">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-zinc-200 font-semibold tracking-wide">GIS Spatial Engine</span>
+        </div>
+        <span class="text-[11px] text-zinc-500">HMDA // HYDRAA WALTA</span>
+      </div>
+
+      <div class="my-6 space-y-2.5 font-mono text-xs">
+        <div class="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/5">
+          <span class="text-zinc-400">Lake Full Tank Level (FTL) Buffer</span>
+          <span class="text-emerald-400 font-bold">30m Statutory Zone</span>
+        </div>
+        <div class="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/5">
+          <span class="text-zinc-400">Stormwater Nala Stream Corridor</span>
+          <span class="text-emerald-400 font-bold">9m Drainage Buffer</span>
+        </div>
+        <div class="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/5">
+          <span class="text-zinc-400">TSRERA Regulatory Filings</span>
+          <span class="text-sky-400">Real-Time Verification</span>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] font-mono text-zinc-500">
+        <span>Coordinate System: EPSG 4326</span>
+        <span class="text-zinc-400">Coverage: Hyderabad Region</span>
+      </div>
+    </div>
+
+    <div class="lg:col-span-5 flex flex-col justify-between h-full">
+      <div>
+        <div class="flex items-center justify-between gap-3 mb-3">
+          <span class="text-[11px] font-mono tracking-widest text-[#e11d48] uppercase">
+            {category}
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border bg-emerald-950/40 text-emerald-300 border-emerald-800/50">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            {status}
+          </span>
+        </div>
+
+        <h3 class="font-serif text-3xl sm:text-4xl font-normal tracking-tight text-white mb-3 group-hover:text-zinc-200 transition-colors">
+          {title}
+        </h3>
+
+        <p class="text-sm font-medium text-zinc-300 mb-4 leading-relaxed">
+          {tagline}
+        </p>
+
+        <p class="text-xs text-zinc-400 mb-6 leading-relaxed">
+          {description}
+        </p>
+      </div>
+
+      <div>
+        <div class="flex flex-wrap gap-1.5 mb-6">
+          {tags.map((tag) => (
+            <span class="text-[11px] font-mono px-2.5 py-1 rounded bg-white/[0.03] text-zinc-300 border border-white/[0.07]">
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <div class="flex items-center gap-4 pt-2">
+          {url && (
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-5 py-2.5 rounded-lg bg-[#e11d48] hover:bg-[#be123c] text-white text-xs font-semibold tracking-wide uppercase transition-all active:scale-95 shadow-md shadow-[#e11d48]/20"
+            >
+              Launch Platform ↗
+            </a>
+          )}
+          {repoUrl && (
+            <a
+              href={repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-4 py-2.5 rounded-lg border border-white/10 hover:border-white/20 text-zinc-300 hover:text-white text-xs font-mono transition-colors"
+            >
+              source
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  </article>
+) : (
+  <article class="editorial-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between group relative overflow-hidden">
+    <div>
+      <!-- Custom UI Preview Box per Project -->
+      <div class="rounded-xl bg-black/60 border border-white/5 p-5 mb-6 relative overflow-hidden font-mono text-xs">
+        <div class="flex items-center justify-between pb-3 border-b border-white/[0.06] text-zinc-400 mb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-base select-none">{icon}</span>
+            <span class="text-[11px] tracking-wider text-zinc-300 uppercase">{category}</span>
+          </div>
+          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium border bg-amber-950/40 text-amber-300 border-amber-800/50">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+            {status}
+          </span>
+        </div>
+
+        {title === 'Family Vault' ? (
+          <div class="space-y-2 text-[11px] text-zinc-400">
+            <div class="flex justify-between p-2 rounded bg-white/[0.02] border border-white/5">
+              <span>Security Paradigm</span>
+              <span class="text-emerald-400">Zero-Knowledge</span>
+            </div>
+            <div class="flex justify-between p-2 rounded bg-white/[0.02] border border-white/5">
+              <span>Database Backend</span>
+              <span class="text-sky-400">Oracle ADB Cloud</span>
+            </div>
+            <div class="flex justify-between p-2 rounded bg-white/[0.02] border border-white/5">
+              <span>Target Platforms</span>
+              <span class="text-zinc-300">Capacitor iOS & Android</span>
+            </div>
+          </div>
+        ) : (
+          <div class="space-y-2 text-[11px] text-zinc-400">
+            <div class="flex justify-between p-2 rounded bg-white/[0.02] border border-white/5">
+              <span>Bot Protection</span>
+              <span class="text-emerald-400">Cloudflare Turnstile</span>
+            </div>
+            <div class="flex justify-between p-2 rounded bg-white/[0.02] border border-white/5">
+              <span>Authentication</span>
+              <span class="text-sky-400">Better Auth Sessions</span>
+            </div>
+            <div class="flex justify-between p-2 rounded bg-white/[0.02] border border-white/5">
+              <span>Data Engine</span>
+              <span class="text-zinc-300">TMDB API + Mongo TTL</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <h3 class="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-white mb-2 group-hover:text-zinc-200 transition-colors">
+        {title}
+      </h3>
+
+      <p class="text-sm font-medium text-zinc-300 mb-3 leading-relaxed">
+        {tagline}
+      </p>
+
+      <p class="text-xs text-zinc-400 mb-6 leading-relaxed line-clamp-3">
+        {description}
+      </p>
+    </div>
+
+    <div class="pt-4 border-t border-white/[0.06] mt-auto">
+      <div class="flex flex-wrap gap-1.5 mb-5">
+        {tags.map((tag) => (
+          <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-white/[0.03] text-zinc-400 border border-white/[0.06]">
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      <div class="flex items-center justify-between pt-1">
+        {url ? (
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-medium tracking-wide transition-all active:scale-95"
+          >
+            Launch ↗
+          </a>
+        ) : (
+          <span class="text-xs text-zinc-500 font-mono italic">
+            In development
+          </span>
+        )}
+      </div>
+    </div>
+  </article>
+)}

@@ -1,16 +1,297 @@
 ---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+
+const allProjects = await getCollection('projects');
+const sortedProjects = allProjects.sort((a, b) => a.data.order - b.data.order);
+const featuredProject = sortedProjects.find((p) => p.data.featured) || sortedProjects[0];
+const standardProjects = sortedProjects.filter((p) => p.id !== featuredProject.id);
+
+const teamMembers = [
+  {
+    name: 'Nikhil Malisetty',
+    role: 'Lead Systems & Frontend Architect',
+    image: '/team/nikhil.jpg',
+    bio: 'Fullstack engineer focusing on resilient web applications, tactile UI ergonomics, and autonomous agent-driven development workflows.',
+    github: 'https://github.com/nikhilmalisetty',
+  },
+  {
+    name: 'Prem Swaroop',
+    role: 'Spatial Systems & Product Engineer',
+    image: '/team/prem.jpg',
+    bio: 'Systems builder specializing in geospatial geometry, regulatory compliance pipelines, and high-integrity cloud architectures.',
+    github: 'https://github.com/akpremswaroop',
+  },
+  {
+    name: 'Sree Teja Gunda',
+    role: 'Fullstack & Mobile Engineer',
+    image: '/team/sreeteja.jpg',
+    bio: 'Product engineer passionate about cross-platform mobile apps, reactive interface patterns, and developer productivity tooling.',
+    github: 'https://github.com/gundasreeteja',
+  },
+];
+
+const capabilities = [
+  {
+    category: 'Spatial & GIS',
+    description: 'Cadastral mapping, Lake FTL buffers, stormwater stream analysis, and geospatial compliance engines.',
+    tags: ['Leaflet GIS', 'Turf.js', 'GeoJSON', 'Mappls API', 'HMDA Data'],
+  },
+  {
+    category: 'Modern Web Frameworks',
+    description: 'High-performance reactive user interfaces and server-rendered single-deployment architectures.',
+    tags: ['Next.js 15', 'Svelte 5', 'Astro', 'React 19', 'Tailwind v4'],
+  },
+  {
+    category: 'Cloud & Resilient Storage',
+    description: 'Zero-knowledge encryption, transactional databases, and server-side cache-aside models.',
+    tags: ['Oracle ADB', 'MongoDB Atlas', 'Better Auth', 'Cloudflare Turnstile'],
+  },
+  {
+    category: 'Autonomous Engineering',
+    description: 'AI-augmented development loops, issue tracking via MCP, and automated test harnesses.',
+    tags: ['Linear MCP', 'Agentic Workflows', 'Vitest', 'CDP Automation'],
+  },
+];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="SnapLabs — Purpose-Built Indie Software Studio">
+  <!-- Hero Section -->
+  <section class="relative pt-20 pb-24 px-6 overflow-hidden">
+    <!-- Ambient subtle background glow -->
+    <div class="pointer-events-none absolute -top-40 -left-40 w-[600px] h-[600px] bg-[#e11d48]/5 rounded-full blur-[140px] -z-10"></div>
+
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <!-- Left Column: Editorial Display Typography -->
+      <div class="lg:col-span-7">
+        <div class="tag-line mb-8">
+          Purpose-Built Software Collective
+        </div>
+
+        <h1 class="font-serif tracking-tight text-white mb-8">
+          <span class="block text-4xl sm:text-6xl font-light italic text-zinc-300">Focused</span>
+          <span class="block text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight uppercase leading-[0.9] text-white my-2">Software</span>
+          <span class="block text-4xl sm:text-6xl md:text-7xl font-light tracking-widest text-zinc-600 uppercase">Studio</span>
+        </h1>
+
+        <p class="text-base sm:text-lg text-zinc-400 max-w-xl leading-relaxed mb-10 font-normal">
+          We design and engineer purpose-built web applications, spatial GIS platforms, and autonomous developer workflows — combining technical precision with uncompromising attention to craft.
+        </p>
+
+        <div class="flex items-center gap-4">
+          <a
+            href="#projects"
+            class="px-6 py-3 rounded-lg bg-[#e11d48] hover:bg-[#be123c] text-white text-xs font-semibold uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-[#e11d48]/25"
+          >
+            Explore Projects
+          </a>
+          <a
+            href="#team"
+            class="px-6 py-3 rounded-lg border border-white/10 hover:border-white/25 text-zinc-300 hover:text-white text-xs font-semibold uppercase tracking-widest transition-all active:scale-95 hover:bg-white/[0.03]"
+          >
+            The Team
+          </a>
+        </div>
+      </div>
+
+      <!-- Right Column: Minimalist Geometric Telemetry Visual -->
+      <div class="lg:col-span-5 flex justify-center lg:justify-end">
+        <div class="relative w-72 h-72 sm:w-96 sm:h-96 flex items-center justify-center">
+          <svg class="absolute inset-0 w-full h-full animate-spin-slow opacity-25" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="95" fill="none" stroke="#e11d48" stroke-width="0.8" stroke-dasharray="6, 8" />
+            <circle cx="100" cy="100" r="75" fill="none" stroke="white" stroke-width="0.5" stroke-dasharray="2, 6" />
+          </svg>
+
+          <svg class="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)] animate-spin-reverse-slow opacity-35" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="88" fill="none" stroke="white" stroke-width="0.75" />
+            <line x1="100" y1="4" x2="100" y2="16" stroke="#e11d48" stroke-width="1.5" />
+            <line x1="100" y1="184" x2="100" y2="196" stroke="white" stroke-width="1.5" />
+            <line x1="4" y1="100" x2="16" y2="100" stroke="white" stroke-width="1.5" />
+            <line x1="184" y1="100" x2="196" y2="100" stroke="white" stroke-width="1.5" />
+          </svg>
+
+          <div class="relative z-10 w-36 h-36 rounded-full bg-black/80 border border-white/15 backdrop-blur-xl flex flex-col items-center justify-center p-4 text-center shadow-2xl">
+            <span class="w-2 h-2 rounded-full bg-[#e11d48] animate-ping mb-2"></span>
+            <div class="font-serif text-lg font-bold text-white tracking-wider">SNAPLABS</div>
+            <div class="text-[9px] font-mono tracking-widest text-zinc-500 uppercase mt-0.5">EST. 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Metrics / Stats Row -->
+  <section class="max-w-6xl mx-auto px-6 mb-24">
+    <div class="editorial-card rounded-2xl p-8 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/[0.08]">
+      <div class="py-4 md:py-0 md:px-6 text-center">
+        <div class="font-serif text-4xl sm:text-5xl font-light text-white tracking-tight">3</div>
+        <div class="text-xs uppercase tracking-widest text-zinc-400 font-medium mt-2">Purpose-Built Projects</div>
+      </div>
+
+      <div class="py-4 md:py-0 md:px-6 text-center">
+        <div class="font-serif text-4xl sm:text-5xl font-light text-[#e11d48] tracking-tight">1</div>
+        <div class="text-xs uppercase tracking-widest text-zinc-400 font-medium mt-2">Live In Production</div>
+      </div>
+
+      <div class="py-4 md:py-0 md:px-6 text-center">
+        <div class="font-serif text-4xl sm:text-5xl font-light text-zinc-200 tracking-tight">100%</div>
+        <div class="text-xs uppercase tracking-widest text-zinc-400 font-medium mt-2">Independent & Self-Funded</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
+    <div class="flex items-end justify-between mb-12 border-b border-white/[0.06] pb-6">
+      <div>
+        <div class="tag-line mb-3">Portfolio</div>
+        <h2 class="font-serif text-3xl sm:text-5xl font-normal text-white tracking-tight">
+          Recent Works
+        </h2>
+      </div>
+
+      <div class="text-xs font-mono text-zinc-500">
+        Showing all {allProjects.length} systems
+      </div>
+    </div>
+
+    <!-- Featured Showcase Project (Split View) -->
+    <div class="mb-8">
+      <ProjectCard project={featuredProject} featured={true} />
+    </div>
+
+    <!-- Standard Projects (2-Column Grid) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {standardProjects.map((project) => (
+        <ProjectCard project={project} featured={false} />
+      ))}
+    </div>
+  </section>
+
+  <!-- Technical Foundation / Capabilities Bento Grid -->
+  <section id="architecture" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
+    <div class="mb-12 border-b border-white/[0.06] pb-6">
+      <div class="tag-line mb-3">Expertise</div>
+      <h2 class="font-serif text-3xl sm:text-5xl font-normal text-white tracking-tight">
+        Technical Foundation
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {capabilities.map((cap) => (
+        <div class="editorial-card rounded-2xl p-6 flex flex-col justify-between group">
+          <div>
+            <div class="text-xs font-mono tracking-wider text-[#e11d48] uppercase mb-2">
+              Domain
+            </div>
+            <h3 class="font-serif text-xl font-normal text-white mb-3 group-hover:text-zinc-200 transition-colors">
+              {cap.category}
+            </h3>
+            <p class="text-xs text-zinc-400 leading-relaxed mb-6">
+              {cap.description}
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-1.5 pt-4 border-t border-white/[0.06]">
+            {cap.tags.map((tag) => (
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.03] text-zinc-400 border border-white/[0.05]">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Team Members Section -->
+  <section id="team" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
+    <div class="mb-12 border-b border-white/[0.06] pb-6">
+      <div class="tag-line mb-3">The Collective</div>
+      <h2 class="font-serif text-3xl sm:text-5xl font-normal text-white tracking-tight">
+        Crafted by Three Engineers
+      </h2>
+      <p class="text-sm text-zinc-400 max-w-xl mt-3 font-normal">
+        An indie trio building purpose-driven software with tight feedback loops, personal accountability, and zero middle management.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {teamMembers.map((member) => (
+        <article class="editorial-card rounded-2xl p-7 flex flex-col justify-between group relative overflow-hidden">
+          <div>
+            <!-- Member Avatar Frame with Subtle Glow -->
+            <div class="flex items-center gap-4 mb-6">
+              <div class="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl overflow-hidden bg-black/50 border border-white/15 p-1 flex-shrink-0 group-hover:border-white/30 transition-colors shadow-inner">
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
+              </div>
+
+              <div>
+                <h3 class="font-serif text-2xl font-normal text-white mb-1 group-hover:text-zinc-200 transition-colors">
+                  {member.name}
+                </h3>
+                <div class="text-[11px] font-mono tracking-wider text-[#e11d48] uppercase">
+                  {member.role}
+                </div>
+              </div>
+            </div>
+
+            <p class="text-xs text-zinc-400 leading-relaxed font-normal">
+              {member.bio}
+            </p>
+          </div>
+
+          <div class="pt-6 border-t border-white/[0.06] mt-6 flex justify-between items-center text-xs">
+            <span class="text-zinc-500 font-mono text-[11px]">Core Engineer</span>
+            <a
+              href={member.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-mono text-zinc-400 hover:text-white transition-colors"
+            >
+              github ↗
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Call to Action Banner -->
+  <section class="max-w-6xl mx-auto px-6 mb-24">
+    <div class="editorial-card rounded-3xl p-8 sm:p-14 relative overflow-hidden text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-8">
+      <div class="max-w-xl">
+        <div class="tag-line mb-3">Collaboration</div>
+        <h2 class="font-serif text-3xl sm:text-4xl font-normal text-white tracking-tight mb-3">
+          Have a purpose-built idea?
+        </h2>
+        <p class="text-sm text-zinc-400 leading-relaxed font-normal">
+          We collaborate with fellow indie developers, explore bespoke systems, and build software that respects user attention.
+        </p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+        <a
+          href="mailto:contact@snaplabs.tech"
+          class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#e11d48] hover:bg-[#be123c] text-white text-xs font-semibold uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-[#e11d48]/25 text-center"
+        >
+          Start a Conversation
+        </a>
+        <a
+          href="https://github.com/MugguruMonagallu"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="w-full sm:w-auto px-6 py-3.5 rounded-xl border border-white/10 hover:border-white/25 text-zinc-300 hover:text-white text-xs font-semibold uppercase tracking-widest transition-all active:scale-95 hover:bg-white/[0.03] text-center"
+        >
+          Explore GitHub ↗
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
