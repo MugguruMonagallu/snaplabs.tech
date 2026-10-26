@@ -5,7 +5,7 @@
 [![Astro](https://img.shields.io/badge/Astro-5.x-BC52EE?style=flat-square&logo=astro&logoColor=white)](https://astro.build)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?style=flat-square&logo=svelte&logoColor=white)](https://svelte.dev)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
 ---
@@ -23,7 +23,7 @@ This repository powers the official website and portfolio at [snaplabs.tech](htt
 - **Core Framework:** [Astro 5](https://astro.build) (Static Site Generation with Content Layer)
 - **Styling Engine:** [Tailwind CSS v4](https://tailwindcss.com) via `@tailwindcss/vite`
 - **Component Variants:** [`class-variance-authority` (cva)](https://cva.style) + [`clsx`](https://github.com/lukeed/clsx)
-- **Interactive Islands:** [Svelte 5](https://svelte.dev) via `@astrojs/svelte`
+- **Interactive Islands:** [React 19](https://react.dev) via `@astrojs/react`
 - **Typography:** [Cormorant Garamond](https://fonts.google.com/specimen/Cormorant+Garamond) (Editorial Display Serif) + [Plus Jakarta Sans](https://fonts.google.com/specimen/Plus+Jakarta+Sans) (Interface Sans)
 - **Issue Tracking & CI:** Linear workspace integration via Model Context Protocol (MCP)
 
