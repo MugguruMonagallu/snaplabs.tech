@@ -1,18 +1,19 @@
-# ⚡ SnapLabs Studio (`snaplabs.tech`)
+# ⚡ SnapLabs (`snaplabs.tech`)
 
-> **Purpose-built software collective engineering single-purpose web platforms, GIS spatial intelligence, and autonomous developer workflows.**
+> **Independent engineering trio building purpose-built software to solve real-world friction.**
 
 [![Astro](https://img.shields.io/badge/Astro-5.x-BC52EE?style=flat-square&logo=astro&logoColor=white)](https://astro.build)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
+[![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)](.github/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
 ---
 
 ## 🧭 Overview
 
-**SnapLabs** is an indie engineering studio founded by three developers. We build small, razor-sharp tools designed for exact real-world problems — avoiding enterprise bloat in favor of tactile performance, zero-knowledge privacy, and high-integrity architectures.
+**SnapLabs** is an independent engineering project by three friends in real life (Nikhil, Prem, and Sree Teja). We talk constantly about technology, emerging AI systems, and software craft. When we spot broken workflows or friction in daily life, we engineer single-purpose tools to solve them — avoiding corporate bloat in favor of tactile performance, zero-knowledge security, and grounded spatial systems.
 
 This repository powers the official website and portfolio at [snaplabs.tech](https://snaplabs.tech).
 
@@ -20,12 +21,17 @@ This repository powers the official website and portfolio at [snaplabs.tech](htt
 
 ## 🛠️ Tech Stack & Architecture
 
-- **Core Framework:** [Astro 5](https://astro.build) (Static Site Generation with Content Layer)
+- **Core Framework:** [Astro 5](https://docs.astro.build) (Static Site Generation with Content Layer API)
+- **Interactive Islands:** [React 19](https://react.dev) via `@astrojs/react`
+  - In-tree WebGL Phosphor CRT Telemetry Terminal ([`CrtTerminal.tsx`](./src/components/CrtTerminal.tsx))
+  - Scroll-linked kinetic tagline reveal ([`TaglineReveal.tsx`](./src/components/TaglineReveal.tsx))
 - **Styling Engine:** [Tailwind CSS v4](https://tailwindcss.com) via `@tailwindcss/vite`
 - **Component Variants:** [`class-variance-authority` (cva)](https://cva.style) + [`clsx`](https://github.com/lukeed/clsx)
-- **Interactive Islands:** [React 19](https://react.dev) via `@astrojs/react`
-- **Typography:** [Cormorant Garamond](https://fonts.google.com/specimen/Cormorant+Garamond) (Editorial Display Serif) + [Plus Jakarta Sans](https://fonts.google.com/specimen/Plus+Jakarta+Sans) (Interface Sans)
-- **Issue Tracking & CI:** Linear workspace integration via Model Context Protocol (MCP)
+- **Typography:**
+  - Display/Headings: [Cormorant Garamond](https://fonts.google.com/specimen/Cormorant+Garamond) (Editorial Serif)
+  - Interface/Body: [Geist](https://fonts.google.com/specimen/Geist) (Geometric Sans)
+  - Telemetry/Metadata: [Geist Mono](https://fonts.google.com/specimen/Geist+Mono) (Monospace)
+- **Static Analysis & Guardrails:** `@astrojs/check` + TypeScript + GitHub Actions CI
 
 ---
 
@@ -33,17 +39,21 @@ This repository powers the official website and portfolio at [snaplabs.tech](htt
 
 ```text
 snaplabs.tech/
+├── .github/
+│   └── workflows/
+│       └── ci.yml            # Automated typecheck & build CI pipeline
 ├── docs/
-│   └── agents/               # Matt Pocock agent skill configs (Linear, Triage, Domain)
-│       ├── domain.md
-│       ├── issue-tracker.md
-│       └── triage-labels.md
+│   ├── adr/                  # Architecture Decision Records
+│   │   └── 0001-react-and-crt-telemetry-island.md
+│   └── agents/               # Linear, triage labels, and domain skill configs
 ├── public/
 │   ├── favicon.svg
 │   └── team/                 # Member avatars (Nikhil, Prem, Sree Teja)
 ├── src/
 │   ├── components/
-│   │   └── ProjectCard.astro # Variant-driven project card (Featured & Grid)
+│   │   ├── CrtTerminal.tsx   # Pure WebGL CRT phosphor telemetry island
+│   │   ├── ProjectCard.astro # Variant-driven project card (Featured & Grid)
+│   │   └── TaglineReveal.tsx # Scroll-linked kinetic typography reveal
 │   ├── content/
 │   │   └── projects/         # Markdown content collections for lab projects
 │   │       ├── family-vault.md
@@ -58,6 +68,7 @@ snaplabs.tech/
 │   └── content.config.ts     # Zod schema definitions for Content Layer
 ├── AGENTS.md                 # Agent instructions & repo conventions
 ├── DESIGN.md                 # Design system specifications & component guidelines
+├── GLOSSARY.md               # Domain terminology and vocabulary definitions
 ├── astro.config.mjs          # Astro & Vite plugin configuration
 └── package.json
 ```
@@ -94,10 +105,13 @@ npx astro dev --background
 
 Server will run at `http://localhost:4321`.
 
-### Build & Verification
+### Typecheck & Build
 
 ```bash
-# Run typecheck and production build
+# Run Astro template & TypeScript diagnostics
+npm run check
+
+# Run full production build (runs check + astro build)
 npm run build
 
 # Preview production build locally
@@ -132,9 +146,9 @@ Optional extended markdown notes and architecture details.
 
 ---
 
-## 👥 The Collective
+## 👥 The Builders
 
-SnapLabs is engineered by:
+SnapLabs is built collaboratively by three friends:
 
 - **Nikhil Malisetty** — *Lead Systems & Frontend Architect*
 - **Prem Swaroop** — *Spatial Systems & Product Engineer*
