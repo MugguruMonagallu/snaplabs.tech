@@ -59,7 +59,7 @@ Before finishing any task that changes code, templates, or styles, you **must**:
 - Full Astro Documentation: https://docs.astro.build
 - Routing: https://docs.astro.build/en/guides/routing/
 - Astro Components: https://docs.astro.build/en/basics/astro-components/
-- Svelte Integration: https://docs.astro.build/en/guides/integrations-guide/svelte/
+- React Integration: https://docs.astro.build/en/guides/integrations-guide/react/
 - Content Collections: https://docs.astro.build/en/guides/content-collections/
 - Styling: https://docs.astro.build/en/guides/styling/
 
