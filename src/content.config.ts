@@ -8,7 +8,7 @@ const projects = defineCollection({
     title: z.string(),
     tagline: z.string(),
     description: z.string(),
-    category: z.string().default('PURPOSE-BUILT APP'),
+    category: z.string().default('APP'),
     status: z.enum(['live', 'beta', 'building', 'concept']).default('building'),
     url: z.string().url().optional(),
     repoUrl: z.string().url().optional(),

@@ -7,8 +7,8 @@ interface Props {
 }
 
 const {
-  title = 'SnapLabs — Purpose-Built Indie Software Studio',
-  description = 'An indie collective engineering single-purpose web platforms, GIS spatial intelligence, and autonomous developer workflows.',
+  title = 'SnapLabs — Independent Engineering | Purpose Built Software',
+  description = 'An independent engineering project by three friends building spatial GIS tools, zero knowledge encrypted storage, and developer workflows.',
 } = Astro.props;
 ---
 
@@ -23,36 +23,36 @@ const {
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#09090b" />
 
-    <!-- Google Fonts: Cormorant Garamond & Plus Jakarta Sans -->
+    <!-- Google Fonts: Cormorant Garamond (Editorial Display), Geist (Interface), Geist Mono (Telemetry) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>
   <body class="min-h-screen flex flex-col bg-[#09090b] text-[#e4e4e7]">
-    <!-- Top Glass Navigation -->
+    <!-- Top Glass Navigation Bar -->
     <header class="sticky top-0 z-50 glass-nav">
-      <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+      <div class="max-w-6xl mx-auto px-6 h-18 flex items-center justify-between">
         <a href="/" class="flex items-center gap-2.5 group">
-          <span class="w-2 h-2 rounded-full bg-[#e11d48] group-hover:scale-125 transition-transform duration-200"></span>
-          <span class="text-sm font-semibold tracking-widest uppercase text-white group-hover:text-zinc-300 transition-colors">
-            SnapLabs <span class="text-zinc-500 font-normal">Studio</span>
+          <span class="w-2.5 h-2.5 rounded-full bg-[#e11d48] group-hover:scale-125 transition-transform duration-200"></span>
+          <span class="text-sm font-semibold tracking-wider uppercase text-white group-hover:text-zinc-300 transition-colors">
+            SnapLabs
           </span>
         </a>
 
-        <nav class="flex items-center gap-8 text-xs uppercase tracking-wider text-zinc-400">
+        <nav class="flex items-center gap-7 text-xs uppercase tracking-wider text-zinc-400">
           <a href="#projects" class="hover:text-white transition-colors">Projects</a>
           <a href="#architecture" class="hover:text-white transition-colors">Architecture</a>
-          <a href="#team" class="hover:text-white transition-colors">Team</a>
+          <a href="#team" class="hover:text-white transition-colors">The Trio</a>
           <a
             href="https://github.com/MugguruMonagallu"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-xs px-3.5 py-1.5 rounded-full border border-white/10 hover:border-white/30 text-zinc-300 hover:text-white transition-all hover:bg-white/5 lowercase font-mono"
+            class="text-xs px-3.5 py-1.5 rounded-full border border-white/10 hover:border-white/30 text-zinc-300 hover:text-white transition-all hover:bg-white/5 font-mono lowercase"
           >
-            GitHub ↗
+            github ↗
           </a>
         </nav>
       </div>
@@ -65,12 +65,13 @@ const {
     <footer class="border-t border-white/[0.06] py-14 px-6 mt-32 text-xs text-zinc-500">
       <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
         <div>
-          <div class="text-sm font-serif text-zinc-300 tracking-wide mb-1">SnapLabs Collective</div>
-          <div class="text-zinc-500 text-[11px]">Independent engineering. Purpose-built systems. © {new Date().getFullYear()}</div>
+          <div class="text-sm font-serif text-zinc-300 tracking-wide mb-1">SnapLabs</div>
+          <div class="text-zinc-500 text-[11px]">Independent engineering. Purpose built software. © {new Date().getFullYear()}</div>
         </div>
 
         <div class="flex items-center gap-6 text-zinc-400 text-xs">
           <a href="https://github.com/MugguruMonagallu" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">GitHub</a>
+          <a href="mailto:contact@snaplabs.tech" class="hover:text-white transition-colors">contact@snaplabs.tech</a>
           <div class="flex items-center gap-2 pl-4 border-l border-white/10">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
             <span class="text-zinc-400 text-[11px] font-mono">Systems Live</span>

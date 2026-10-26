@@ -86,7 +86,7 @@ const { title, category, tagline, description, status, url, repoUrl, tags, icon 
               rel="noopener noreferrer"
               class="px-5 py-2.5 rounded-lg bg-[#e11d48] hover:bg-[#be123c] text-white text-xs font-semibold tracking-wide uppercase transition-all active:scale-95 shadow-md shadow-[#e11d48]/20"
             >
-              Launch Platform ↗
+              Launch ↗
             </a>
           )}
           {repoUrl && (
@@ -113,10 +113,17 @@ const { title, category, tagline, description, status, url, repoUrl, tags, icon 
             <span class="text-base select-none">{icon}</span>
             <span class="text-[11px] tracking-wider text-zinc-300 uppercase">{category}</span>
           </div>
-          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium border bg-amber-950/40 text-amber-300 border-amber-800/50">
-            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-            {status}
-          </span>
+          {status === 'live' ? (
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium border bg-emerald-950/40 text-emerald-300 border-emerald-800/50">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              {status}
+            </span>
+          ) : (
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium border bg-amber-950/40 text-amber-300 border-amber-800/50">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+              {status}
+            </span>
+          )}
         </div>
 
         {title === 'Family Vault' ? (

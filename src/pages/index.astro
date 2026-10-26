@@ -2,6 +2,8 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import CrtTerminal from '../components/CrtTerminal.tsx';
+import TaglineReveal from '../components/TaglineReveal.tsx';
 
 const allProjects = await getCollection('projects');
 const sortedProjects = allProjects.sort((a, b) => a.data.order - b.data.order);
@@ -11,23 +13,23 @@ const standardProjects = sortedProjects.filter((p) => p.id !== featuredProject.i
 const teamMembers = [
   {
     name: 'Nikhil Malisetty',
-    role: 'Lead Systems & Frontend Architect',
+    role: 'Systems & Frontend Architect',
     image: '/team/nikhil.jpg',
-    bio: 'Fullstack engineer focusing on resilient web applications, tactile UI ergonomics, and autonomous agent-driven development workflows.',
+    bio: 'Engineer focused on resilient web applications, tactile UI ergonomics, and autonomous agent-driven development workflows.',
     github: 'https://github.com/nikhilmalisetty',
   },
   {
     name: 'Prem Swaroop',
     role: 'Spatial Systems & Product Engineer',
     image: '/team/prem.jpg',
-    bio: 'Systems builder specializing in geospatial geometry, regulatory compliance pipelines, and high-integrity cloud architectures.',
+    bio: 'Engineer specializing in geospatial geometry, regulatory compliance pipelines, and high-integrity cloud architectures.',
     github: 'https://github.com/akpremswaroop',
   },
   {
     name: 'Sree Teja Gunda',
     role: 'Fullstack & Mobile Engineer',
     image: '/team/sreeteja.jpg',
-    bio: 'Product engineer passionate about cross-platform mobile apps, reactive interface patterns, and developer productivity tooling.',
+    bio: 'Product engineer passionate about reactive interface patterns, cross-platform mobile apps, and developer productivity tooling.',
     github: 'https://github.com/gundasreeteja',
   },
 ];
@@ -39,26 +41,26 @@ const capabilities = [
     tags: ['Leaflet GIS', 'Turf.js', 'GeoJSON', 'Mappls API', 'HMDA Data'],
   },
   {
-    category: 'Modern Web Frameworks',
+    category: 'Modern Web Architecture',
     description: 'High-performance reactive user interfaces and server-rendered single-deployment architectures.',
-    tags: ['Next.js', 'Svelte', 'Astro', 'React', 'Tailwind'],
+    tags: ['React 19', 'Astro', 'TypeScript', 'Tailwind CSS', 'Vite'],
   },
   {
-    category: 'Cloud & Resilient Storage',
-    description: 'Zero-knowledge encryption, transactional databases, and server-side cache-aside models.',
+    category: 'Resilient Cloud & Storage',
+    description: 'Client-side zero-knowledge encryption, transactional databases, and server-side cache-aside models.',
     tags: ['Oracle ADB', 'MongoDB Atlas', 'Better Auth', 'Cloudflare Turnstile'],
   },
   {
-    category: 'Autonomous Engineering',
-    description: 'AI-augmented development loops, issue tracking via MCP, and automated test harnesses.',
+    category: 'Autonomous Workflows',
+    description: 'Agent-augmented development loops, issue tracking via Model Context Protocol, and automated test harnesses.',
     tags: ['Linear MCP', 'Agentic Workflows', 'Vitest', 'CDP Automation'],
   },
 ];
 ---
 
-<Layout title="SnapLabs — Purpose-Built Indie Software Studio">
+<Layout title="SnapLabs — Independent Engineering | Purpose Built Software">
   <!-- Hero Section -->
-  <section class="relative pt-20 pb-24 px-6 overflow-hidden">
+  <section class="relative pt-16 sm:pt-24 pb-20 px-6 overflow-hidden">
     <!-- Ambient subtle background glow -->
     <div class="pointer-events-none absolute -top-40 -left-40 w-[600px] h-[600px] bg-[#e11d48]/5 rounded-full blur-[140px] -z-10"></div>
 
@@ -66,89 +68,77 @@ const capabilities = [
       <!-- Left Column: Editorial Display Typography -->
       <div class="lg:col-span-7">
         <div class="tag-line mb-8">
-          Purpose-Built Software Collective
+          Independent Engineering Trio
         </div>
 
-        <h1 class="font-serif tracking-tight text-white mb-8">
-          <span class="block text-4xl sm:text-6xl font-light italic text-zinc-300">Focused</span>
-          <span class="block text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight uppercase leading-[0.9] text-white my-2">Software</span>
-          <span class="block text-4xl sm:text-6xl md:text-7xl font-light tracking-widest text-zinc-600 uppercase">Studio</span>
+        <h1 class="font-serif tracking-tight text-white mb-8 max-w-[680px]">
+          <span class="block text-4xl sm:text-6xl md:text-7xl font-normal tracking-tight text-white leading-[1.08]">
+            Purpose Built Software for Real World Problems
+          </span>
         </h1>
 
         <p class="text-base sm:text-lg text-zinc-400 max-w-xl leading-relaxed mb-10 font-normal">
-          We design and engineer purpose-built web applications, spatial GIS platforms, and autonomous developer workflows — combining technical precision with uncompromising attention to craft.
+          We are three friends and developers who talk tech and AI, spot broken workflows in daily life, and engineer tools to solve them. Each project was built because we ran into the problem ourselves.
         </p>
 
-        <div class="flex items-center gap-4">
+        <!-- Single high-contrast primary CTA per landing-page-design -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <a
             href="#projects"
-            class="px-6 py-3 rounded-lg bg-[#e11d48] hover:bg-[#be123c] text-white text-xs font-semibold uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-[#e11d48]/25"
+            class="px-6 py-3.5 rounded-xl bg-[#e11d48] hover:bg-[#be123c] text-white text-xs font-semibold uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-[#e11d48]/25"
           >
             Explore Projects
           </a>
           <a
             href="#team"
-            class="px-6 py-3 rounded-lg border border-white/10 hover:border-white/25 text-zinc-300 hover:text-white text-xs font-semibold uppercase tracking-widest transition-all active:scale-95 hover:bg-white/[0.03]"
+            class="px-4 py-3 text-xs font-mono text-zinc-400 hover:text-white transition-colors"
           >
-            The Team
+            Meet the trio ↓
           </a>
         </div>
       </div>
 
-      <!-- Right Column: Minimalist Geometric Telemetry Visual -->
+      <!-- Right Column: Interactive WebGL Phosphor CRT Telemetry Terminal -->
       <div class="lg:col-span-5 flex justify-center lg:justify-end">
-        <div class="relative w-72 h-72 sm:w-96 sm:h-96 flex items-center justify-center">
-          <svg class="absolute inset-0 w-full h-full animate-spin-slow opacity-25" viewBox="0 0 200 200">
-            <circle cx="100" cy="100" r="95" fill="none" stroke="#e11d48" stroke-width="0.8" stroke-dasharray="6, 8" />
-            <circle cx="100" cy="100" r="75" fill="none" stroke="white" stroke-width="0.5" stroke-dasharray="2, 6" />
-          </svg>
-
-          <svg class="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)] animate-spin-reverse-slow opacity-35" viewBox="0 0 200 200">
-            <circle cx="100" cy="100" r="88" fill="none" stroke="white" stroke-width="0.75" />
-            <line x1="100" y1="4" x2="100" y2="16" stroke="#e11d48" stroke-width="1.5" />
-            <line x1="100" y1="184" x2="100" y2="196" stroke="white" stroke-width="1.5" />
-            <line x1="4" y1="100" x2="16" y2="100" stroke="white" stroke-width="1.5" />
-            <line x1="184" y1="100" x2="196" y2="100" stroke="white" stroke-width="1.5" />
-          </svg>
-
-          <div class="relative z-10 w-36 h-36 rounded-full bg-black/80 border border-white/15 backdrop-blur-xl flex flex-col items-center justify-center p-4 text-center shadow-2xl">
-            <span class="w-2 h-2 rounded-full bg-[#e11d48] animate-ping mb-2"></span>
-            <div class="font-serif text-lg font-bold text-white tracking-wider">SNAPLABS</div>
-            <div class="text-[9px] font-mono tracking-widest text-zinc-500 uppercase mt-0.5">EST. 2026</div>
-          </div>
-        </div>
+        <CrtTerminal client:only="react" initialMode="green" />
       </div>
     </div>
   </section>
 
-  <!-- Metrics / Stats Row -->
-  <section class="max-w-6xl mx-auto px-6 mb-24">
+  <!-- Metrics / Proof Row -->
+  <section class="max-w-6xl mx-auto px-6 mb-16">
     <div class="editorial-card rounded-2xl p-8 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/[0.08]">
       <div class="py-4 md:py-0 md:px-6 text-center">
         <div class="font-serif text-4xl sm:text-5xl font-light text-white tracking-tight">3</div>
-        <div class="text-xs uppercase tracking-widest text-zinc-400 font-medium mt-2">Purpose-Built Projects</div>
+        <div class="text-xs uppercase tracking-widest text-zinc-400 font-medium mt-2">Purpose Built Systems</div>
       </div>
 
       <div class="py-4 md:py-0 md:px-6 text-center">
-        <div class="font-serif text-4xl sm:text-5xl font-light text-[#e11d48] tracking-tight">1</div>
-        <div class="text-xs uppercase tracking-widest text-zinc-400 font-medium mt-2">Live In Production</div>
+        <div class="font-serif text-4xl sm:text-5xl font-light text-[#e11d48] tracking-tight">100%</div>
+        <div class="text-xs uppercase tracking-widest text-zinc-400 font-medium mt-2">Real Problem Grounding</div>
       </div>
 
       <div class="py-4 md:py-0 md:px-6 text-center">
-        <div class="font-serif text-4xl sm:text-5xl font-light text-zinc-200 tracking-tight">100%</div>
-        <div class="text-xs uppercase tracking-widest text-zinc-400 font-medium mt-2">Independent & Self-Funded</div>
+        <div class="font-serif text-4xl sm:text-5xl font-light text-zinc-200 tracking-tight">0</div>
+        <div class="text-xs uppercase tracking-widest text-zinc-400 font-medium mt-2">Corporate Middlemen</div>
       </div>
     </div>
   </section>
+
+  <!-- Mandatory Tagline Reveal Section (B11) -->
+  <TaglineReveal client:visible />
 
   <!-- Projects Section -->
   <section id="projects" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
     <div class="flex items-end justify-between mb-12 border-b border-white/[0.06] pb-6">
       <div>
-        <div class="tag-line mb-3">Portfolio</div>
+        <div class="tag-line mb-3">Shipped Systems</div>
         <h2 class="font-serif text-3xl sm:text-5xl font-normal text-white tracking-tight">
-          Recent Works
+          Projects
         </h2>
+        <p class="text-sm text-zinc-400 mt-2">
+          Each system addresses a tangible personal or societal challenge we experienced firsthand.
+        </p>
       </div>
 
       <div class="text-xs font-mono text-zinc-500">
@@ -169,10 +159,10 @@ const capabilities = [
     </div>
   </section>
 
-  <!-- Technical Foundation / Capabilities Bento Grid -->
+  <!-- Technical Foundation Bento Grid -->
   <section id="architecture" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
     <div class="mb-12 border-b border-white/[0.06] pb-6">
-      <div class="tag-line mb-3">Expertise</div>
+      <div class="tag-line mb-3">Capabilities</div>
       <h2 class="font-serif text-3xl sm:text-5xl font-normal text-white tracking-tight">
         Technical Foundation
       </h2>
@@ -205,15 +195,15 @@ const capabilities = [
     </div>
   </section>
 
-  <!-- Team Members Section -->
+  <!-- The Trio: Three Friends & Developers -->
   <section id="team" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
     <div class="mb-12 border-b border-white/[0.06] pb-6">
-      <div class="tag-line mb-3">The Collective</div>
+      <div class="tag-line mb-3">The Builders</div>
       <h2 class="font-serif text-3xl sm:text-5xl font-normal text-white tracking-tight">
-        Crafted by Three Engineers
+        Three Friends in Real Life
       </h2>
       <p class="text-sm text-zinc-400 max-w-xl mt-3 font-normal">
-        An indie trio building purpose-driven software with tight feedback loops, personal accountability, and zero middle management.
+        We talk constantly about tech, emerging AI capabilities, and software craft. When we spot broken workflows, we build software together to solve them.
       </p>
     </div>
 
@@ -263,16 +253,16 @@ const capabilities = [
     </div>
   </section>
 
-  <!-- Call to Action Banner -->
+  <!-- Bottom Contact Banner (Per user instruction: Contact stays at the end) -->
   <section class="max-w-6xl mx-auto px-6 mb-24">
     <div class="editorial-card rounded-3xl p-8 sm:p-14 relative overflow-hidden text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-8">
       <div class="max-w-xl">
-        <div class="tag-line mb-3">Collaboration</div>
+        <div class="tag-line mb-3">Conversation</div>
         <h2 class="font-serif text-3xl sm:text-4xl font-normal text-white tracking-tight mb-3">
-          Have a purpose-built idea?
+          Have a real world problem?
         </h2>
         <p class="text-sm text-zinc-400 leading-relaxed font-normal">
-          We collaborate with fellow indie developers, explore bespoke systems, and build software that respects user attention.
+          We collaborate with fellow developers, discuss emerging AI patterns, and build software that respects what a user needs.
         </p>
       </div>
 
@@ -289,7 +279,7 @@ const capabilities = [
           rel="noopener noreferrer"
           class="w-full sm:w-auto px-6 py-3.5 rounded-xl border border-white/10 hover:border-white/25 text-zinc-300 hover:text-white text-xs font-semibold uppercase tracking-widest transition-all active:scale-95 hover:bg-white/[0.03] text-center"
         >
-          Explore GitHub ↗
+          GitHub ↗
         </a>
       </div>
     </div>
