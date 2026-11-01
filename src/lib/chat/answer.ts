@@ -15,6 +15,7 @@ function wrapUser(text: string): string {
 export async function* runAnswer(
   sanitizedQuery: string,
   history: ChatMessage[],
+  signal?: AbortSignal,
 ): AsyncGenerator<string, void, unknown> {
   const config = getChatConfig('answer');
   const context = buildContext(sanitizedQuery, 3);
@@ -29,5 +30,5 @@ export async function* runAnswer(
   }));
   messages.push({ role: 'user', content: wrapUser(sanitizedQuery) });
 
-  yield* streamComplete(config, [{ role: 'system', content: system }, ...messages], 1024);
+  yield* streamComplete(config, [{ role: 'system', content: system }, ...messages], 1024, signal);
 }

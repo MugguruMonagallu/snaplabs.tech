@@ -70,7 +70,8 @@ export default function ChatWidget({ className = '' }: ChatWidgetProps) {
       const decoder = new TextDecoder();
       let buffer = '';
       let assistantText = '';
-      while (true) {
+      let isDone = false;
+      while (!isDone) {
         const { done, value } = await reader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
@@ -80,11 +81,17 @@ export default function ChatWidget({ className = '' }: ChatWidgetProps) {
           const trimmed = line.trim();
           if (!trimmed.startsWith('data:')) continue;
           const payload = trimmed.slice(5).trim();
-          if (payload === '[DONE]') break;
+          if (payload === '[DONE]') {
+            isDone = true;
+            break;
+          }
           try {
             const event = JSON.parse(payload) as { type?: string; text?: string };
             if (event.type === 'delta' && event.text) {
               assistantText += event.text;
+              setMessages([...nextMessages, { role: 'assistant', content: assistantText }]);
+            } else if (event.type === 'replace' && event.text) {
+              assistantText = event.text;
               setMessages([...nextMessages, { role: 'assistant', content: assistantText }]);
             }
           } catch {

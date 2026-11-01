@@ -59,7 +59,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       try {
-        for await (const event of runPipeline(messages)) {
+        for await (const event of runPipeline(messages, request.signal)) {
           controller.enqueue(encode(event));
         }
       } catch {

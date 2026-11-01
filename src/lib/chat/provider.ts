@@ -66,7 +66,13 @@ function body(config: ChatConfig, messages: ChatMessage[], maxTokens: number, st
   });
 }
 
-async function post(config: ChatConfig, messages: ChatMessage[], maxTokens: number, stream: boolean): Promise<Response> {
+async function post(
+  config: ChatConfig,
+  messages: ChatMessage[],
+  maxTokens: number,
+  stream: boolean,
+  signal?: AbortSignal,
+): Promise<Response> {
   if (!config.apiKey) {
     throw new ProviderError('CHAT_API_KEY is not configured');
   }
@@ -74,6 +80,7 @@ async function post(config: ChatConfig, messages: ChatMessage[], maxTokens: numb
     method: 'POST',
     headers: headers(config),
     body: body(config, messages, maxTokens, stream),
+    signal,
   });
   if (!res.ok) {
     throw new ProviderError(`provider responded ${res.status}`);
@@ -85,8 +92,13 @@ async function post(config: ChatConfig, messages: ChatMessage[], maxTokens: numb
  * Non-streaming completion. Returns the assistant text.
  * Throws ProviderError on any failure — callers must mask details.
  */
-export async function complete(config: ChatConfig, messages: ChatMessage[], maxTokens: number): Promise<string> {
-  const res = await post(config, messages, maxTokens, false);
+export async function complete(
+  config: ChatConfig,
+  messages: ChatMessage[],
+  maxTokens: number,
+  signal?: AbortSignal,
+): Promise<string> {
+  const res = await post(config, messages, maxTokens, false, signal);
   const data = (await res.json()) as Record<string, unknown>;
   if (data.error) throw new ProviderError('provider returned an error');
   if (config.format === 'anthropic') {
@@ -105,38 +117,44 @@ export async function* streamComplete(
   config: ChatConfig,
   messages: ChatMessage[],
   maxTokens: number,
+  signal?: AbortSignal,
 ): AsyncGenerator<string, void, unknown> {
-  const res = await post(config, messages, maxTokens, true);
+  const res = await post(config, messages, maxTokens, true, signal);
   if (!res.body) throw new ProviderError('provider returned no body');
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
   let buffer = '';
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split('\n');
-    buffer = lines.pop() ?? '';
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed.startsWith('data:')) continue;
-      const payload = trimmed.slice(5).trim();
-      if (payload === '[DONE]') return;
-      try {
-        const event = JSON.parse(payload) as Record<string, unknown>;
-        if (config.format === 'anthropic') {
-          const delta = event.delta as { type?: string; text?: string } | undefined;
-          if (event.type === 'content_block_delta' && delta?.type === 'text_delta' && delta.text) {
-            yield delta.text;
+  try {
+    while (true) {
+      if (signal?.aborted) break;
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() ?? '';
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed.startsWith('data:')) continue;
+        const payload = trimmed.slice(5).trim();
+        if (payload === '[DONE]') return;
+        try {
+          const event = JSON.parse(payload) as Record<string, unknown>;
+          if (config.format === 'anthropic') {
+            const delta = event.delta as { type?: string; text?: string } | undefined;
+            if (event.type === 'content_block_delta' && delta?.type === 'text_delta' && delta.text) {
+              yield delta.text;
+            }
+          } else {
+            const choices = event.choices as { delta?: { content?: string } }[] | undefined;
+            const text = choices?.[0]?.delta?.content;
+            if (text) yield text;
           }
-        } else {
-          const choices = event.choices as { delta?: { content?: string } }[] | undefined;
-          const text = choices?.[0]?.delta?.content;
-          if (text) yield text;
+        } catch {
+          // Ignore malformed SSE lines.
         }
-      } catch {
-        // Ignore malformed SSE lines.
       }
     }
+  } finally {
+    reader.releaseLock();
   }
 }
