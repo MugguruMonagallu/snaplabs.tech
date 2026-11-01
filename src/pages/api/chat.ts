@@ -5,7 +5,14 @@
 
 import type { APIRoute } from 'astro';
 import { runPipeline } from '../../lib/chat/pipeline';
-import { validateMessages, checkRateLimit, acquireStream, ValidationError, RateLimitError } from '../../lib/chat/ratelimit';
+import {
+  validateMessages,
+  checkRateLimit,
+  acquireStream,
+  acquireGlobalSlot,
+  ValidationError,
+  RateLimitError,
+} from '../../lib/chat/ratelimit';
 import { REFUSAL_UNAVAILABLE } from '../../lib/chat/prompts';
 
 export const prerender = false;
@@ -59,10 +66,24 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       try {
+        await acquireGlobalSlot({
+          signal: request.signal,
+          onWait: () => {
+            controller.enqueue(
+              encode({
+                type: 'status',
+                text: 'High traffic right now — your message is queued and will answer in a moment...',
+              }),
+            );
+          },
+        });
         for await (const event of runPipeline(messages, request.signal)) {
           controller.enqueue(encode(event));
         }
-      } catch {
+      } catch (err) {
+        if ((err as Error).name === 'AbortError' || request.signal.aborted) {
+          return;
+        }
         // Masked: if anything unexpected happens mid-stream, send a safe refusal.
         controller.enqueue(encode({ type: 'delta', text: REFUSAL_UNAVAILABLE }));
         controller.enqueue(encode({ type: 'done', refused: true }));

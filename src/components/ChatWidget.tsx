@@ -87,7 +87,9 @@ export default function ChatWidget({ className = '' }: ChatWidgetProps) {
           }
           try {
             const event = JSON.parse(payload) as { type?: string; text?: string };
-            if (event.type === 'delta' && event.text) {
+            if (event.type === 'status' && event.text) {
+              setMessages([...nextMessages, { role: 'assistant', content: event.text }]);
+            } else if (event.type === 'delta' && event.text) {
               assistantText += event.text;
               setMessages([...nextMessages, { role: 'assistant', content: assistantText }]);
             } else if (event.type === 'replace' && event.text) {
