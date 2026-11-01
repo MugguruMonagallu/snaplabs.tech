@@ -1,6 +1,8 @@
 // Cloudflare Turnstile token verification helper.
 // Bypassed automatically when TURNSTILE_SECRET_KEY is absent or in test environments.
 
+import { getEnv } from './env';
+
 export interface TurnstileVerificationResult {
   success: boolean;
   error?: string;
@@ -16,10 +18,10 @@ export async function verifyTurnstileToken(
   token: string | undefined,
   remoteIp?: string,
 ): Promise<TurnstileVerificationResult> {
-  const secretKey = process.env.TURNSTILE_SECRET_KEY;
+  const secretKey = getEnv('TURNSTILE_SECRET_KEY');
 
   // Bypassed when secret key is not configured or in test mode
-  if (!secretKey || process.env.NODE_ENV === 'test') {
+  if (!secretKey || getEnv('NODE_ENV') === 'test') {
     return { success: true };
   }
 

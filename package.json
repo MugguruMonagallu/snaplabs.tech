@@ -9,7 +9,7 @@
     "dev": "astro dev",
     "check": "astro check",
     "build": "astro check && astro build",
-    "preview": "astro preview",
+    "preview": "node ./scripts/pre-preview.js && astro preview",
     "astro": "astro"
   },
   "dependencies": {

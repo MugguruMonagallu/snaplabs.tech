@@ -18,6 +18,8 @@ export interface ChatConfig {
   format: 'anthropic' | 'openai';
 }
 
+import { getEnv } from './env';
+
 type ApiFormat = 'anthropic' | 'openai';
 
 function detectFormat(baseUrl: string, explicit: string | undefined): ApiFormat {
@@ -26,12 +28,12 @@ function detectFormat(baseUrl: string, explicit: string | undefined): ApiFormat 
 }
 
 export function getChatConfig(model: 'guard' | 'answer'): ChatConfig {
-  const baseUrl = (process.env.CHAT_API_BASE_URL ?? 'https://api.anthropic.com/v1').replace(/\/+$/, '');
-  const apiKey = process.env.CHAT_API_KEY ?? '';
+  const baseUrl = (getEnv('CHAT_API_BASE_URL') ?? 'https://api.anthropic.com/v1').replace(/\/+$/, '');
+  const apiKey = getEnv('CHAT_API_KEY') ?? '';
   const modelName = model === 'guard'
-    ? (process.env.CHAT_GUARD_MODEL ?? 'claude-haiku-4-5')
-    : (process.env.CHAT_ANSWER_MODEL ?? 'claude-sonnet-4-5');
-  return { baseUrl, apiKey, model: modelName, format: detectFormat(baseUrl, process.env.CHAT_API_FORMAT) };
+    ? (getEnv('CHAT_GUARD_MODEL') ?? 'claude-haiku-4-5')
+    : (getEnv('CHAT_ANSWER_MODEL') ?? 'claude-sonnet-4-5');
+  return { baseUrl, apiKey, model: modelName, format: detectFormat(baseUrl, getEnv('CHAT_API_FORMAT')) };
 }
 
 export class ProviderError extends Error {}

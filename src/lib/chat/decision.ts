@@ -6,6 +6,8 @@
 // Safe on-topic messages pass directly to Level 2.
 // Off-topic and adversarial queries fail closed before invoking generative models.
 
+import { getEnv } from './env';
+
 export type DecisionVerdict = 'on-topic' | 'off-topic' | 'injection';
 
 export interface DecisionResult {
@@ -27,11 +29,11 @@ export class DecisionApiError extends Error {}
  */
 export function getDecisionConfig(): DecisionApiConfig {
   const rawUrl = (
-    process.env.CHAT_DECISION_API_BASE_URL ?? 'https://api.experientiallabs.ai/v1/systemone'
+    getEnv('CHAT_DECISION_API_BASE_URL') ?? 'https://api.experientiallabs.ai/v1/systemone'
   ).replace(/\/+$/, '');
   const endpoint = rawUrl.endsWith('/v1/systemone') ? rawUrl : `${rawUrl}/v1/systemone`;
-  const apiKey = process.env.CHAT_DECISION_API_KEY ?? '';
-  const model = process.env.CHAT_DECISION_MODEL ?? 'clef-flash';
+  const apiKey = getEnv('CHAT_DECISION_API_KEY') ?? '';
+  const model = getEnv('CHAT_DECISION_MODEL') ?? 'clef-flash';
   return { endpoint, apiKey, model };
 }
 
