@@ -1,11 +1,14 @@
-import { getSecret } from 'astro:env/server';
+// Environment variable reader for Node.js runtime.
+// In Node.js (development and production standalone), all secrets and configs
+// are directly available on process.env.
 
 export function getEnv(key: string): string | undefined {
-  try {
-    const val = getSecret(key);
-    if (val) return val;
-  } catch {
-    // fallback if outside request context or not initialized
+  if (typeof process !== 'undefined' && process.env) {
+    const val = process.env[key];
+    if (val !== undefined && val !== null && val !== '') return val;
   }
-  return process.env[key];
+  const globalVal = (globalThis as unknown as Record<string, unknown>)[key];
+  if (typeof globalVal === 'string') return globalVal;
+
+  return undefined;
 }

@@ -21,7 +21,7 @@ This repository powers the official website and portfolio at [snaplabs.tech](htt
 
 ## 🛠️ Tech Stack & Architecture
 
-- **Core Framework:** [Astro 5](https://docs.astro.build) (Static Site Generation + Server Endpoints via `@astrojs/cloudflare`)
+- **Core Framework:** [Astro 5](https://docs.astro.build) (Static Site Generation + Server Endpoints via `@astrojs/node` in standalone mode)
 - **Interactive Islands:** [React 19](https://react.dev) via `@astrojs/react`
   - In-tree WebGL Phosphor CRT Telemetry Terminal ([`CrtTerminal.tsx`](./src/components/CrtTerminal.tsx))
   - Scroll-linked kinetic tagline reveal ([`TaglineReveal.tsx`](./src/components/TaglineReveal.tsx))
@@ -52,7 +52,8 @@ snaplabs.tech/
 │   ├── adr/                  # Architecture Decision Records
 │   │   ├── 0001-react-and-crt-telemetry-island.md
 │   │   ├── 0002-system-one-decision-guardrail.md
-│   │   └── 0003-turnstile-bot-mitigation-and-rate-throttler.md
+│   │   ├── 0003-turnstile-bot-mitigation-and-rate-throttler.md
+│   │   └── 0004-node-adapter-openship-deployment.md
 │   └── agents/               # Linear, triage labels, and domain skill configs
 ├── public/
 │   ├── favicon.svg

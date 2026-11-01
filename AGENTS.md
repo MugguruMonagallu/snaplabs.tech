@@ -53,9 +53,9 @@ All assistant code in `src/components/ChatWidget.tsx` and `src/lib/chat/*` must 
 1. **Two-Level Model Hierarchy:**
    - **Level 1 Decision Guardrail (`decision.ts`):** Evaluates prompts via `POST /v1/systemone` with `clef-flash`. Runs in a single forward pass (<300ms) with typed outputs (`topic` and `threat_or_jailbreak`). It does **not** rewrite prompts or autoregressively generate text.
    - **Level 2 Grounded Answer Model (`answer.ts`):** Only invoked if Level 1 approves. Answers strictly using context from `src/content/projects/*.md` wrapped in `<user_message>` tags to neutralize indirect injection risks.
-2. **Zero External AI SDKs & Native Edge Compatibility:**
+2. **Zero External AI SDKs & Native Runtime Compatibility:**
    - Do **not** install Vercel AI SDK (`@ai-sdk/react`, `ai`), heavy vector databases, or native C++ SQLite addons (`better-sqlite3`).
-   - Cloudflare Workers edge runtime has no writable disk and cannot run native Node binaries. Use native Web APIs (`fetch`, `ReadableStream`, `TextDecoder`) and in-memory data structures.
+   - The production server runs via `@astrojs/node` in `standalone` mode on OpenShip Docker containers, serving static assets from `dist/client/` and routing dynamic endpoints from `dist/server/entry.mjs`. Use native Web APIs (`fetch`, `ReadableStream`, `TextDecoder`) and in-memory data structures.
 3. **In-Flight Rate Throttling (`ratelimit.ts`):**
    - 30 RPM token-bucket queue (1 token every 2000ms). Bursts are queued in-flight with progressive SSE status notifications (`{"type": "status", "text": "High traffic right now..."}`) rather than hard 429 rejections.
 4. **Cloudflare Turnstile Bot Barrier (`turnstile.ts`):**
@@ -85,6 +85,7 @@ Before finishing any task that changes code, templates, or styles, you **must**:
   - [`docs/adr/0001-react-and-crt-telemetry-island.md`](./docs/adr/0001-react-and-crt-telemetry-island.md)
   - [`docs/adr/0002-system-one-decision-guardrail.md`](./docs/adr/0002-system-one-decision-guardrail.md)
   - [`docs/adr/0003-turnstile-bot-mitigation-and-rate-throttler.md`](./docs/adr/0003-turnstile-bot-mitigation-and-rate-throttler.md)
+  - [`docs/adr/0004-node-adapter-openship-deployment.md`](./docs/adr/0004-node-adapter-openship-deployment.md)
 
 ---
 
