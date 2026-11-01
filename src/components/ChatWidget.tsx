@@ -42,6 +42,31 @@ export default function ChatWidget({ className = '', siteKey }: ChatWidgetProps)
     if (el) el.scrollTop = el.scrollHeight;
   }, [messages, open, verified]);
 
+  // Lock body scroll on mobile when chat is open to prevent background scrolling
+  useEffect(() => {
+    if (open) {
+      const isMobile = window.innerWidth < 640;
+      if (isMobile) {
+        const prev = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        return () => {
+          document.body.style.overflow = prev;
+        };
+      }
+    }
+  }, [open]);
+
+  // Close on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && open) {
+        setOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [open]);
+
   // Abort any in-flight request when the panel closes or unmounts.
   useEffect(() => {
     return () => {
@@ -156,22 +181,27 @@ export default function ChatWidget({ className = '', siteKey }: ChatWidgetProps)
   }
 
   return (
-    <div className={`fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3 ${className}`}>
+    <>
+      {/* Chat Panel: Full-screen modal on mobile (100dvh), floating card on desktop */}
       {open && (
         <div
-          className="flex h-[520px] w-[calc(100vw-3rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-[#121216]/70 shadow-2xl shadow-black/60 backdrop-blur-[16px] motion-safe:animate-[chat-in_220ms] motion-reduce:animate-none"
+          className="fixed inset-0 z-50 flex flex-col bg-[#09090b] sm:bg-[#121216]/80 sm:backdrop-blur-[16px] sm:shadow-2xl sm:shadow-black/70 sm:inset-auto sm:bottom-6 sm:right-6 sm:h-[540px] sm:w-[400px] sm:max-w-sm sm:rounded-2xl sm:border sm:border-white/[0.08] motion-safe:animate-[chat-in_220ms] motion-reduce:animate-none overflow-hidden h-[100dvh] sm:h-[540px]"
           style={{ animationTimingFunction: EASE }}
           role="dialog"
+          aria-modal="true"
           aria-label="Ask about SnapLabs projects"
         >
-          {/* Header */}
-          <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
+          {/* Header with Safe Area Inset Support */}
+          <div
+            className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4 bg-[#09090b]/80 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none"
+            style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top, 0px))' }}
+          >
             <div>
               <div className="tag-line !text-[10px]">Ask about our projects</div>
-              <div className="mt-1 font-serif text-lg font-normal text-white">SnapLabs Assistant</div>
+              <div className="mt-1 font-serif text-xl sm:text-lg font-normal text-white">SnapLabs Assistant</div>
             </div>
             <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1.5 font-mono text-[10px] text-zinc-500">
+              <span className="flex items-center gap-1.5 font-mono text-[10px] text-zinc-400 sm:text-zinc-500">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
                 online
               </span>
@@ -179,16 +209,20 @@ export default function ChatWidget({ className = '', siteKey }: ChatWidgetProps)
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close chat"
-                className="rounded-lg border border-white/10 px-2 py-1 font-mono text-[10px] text-zinc-400 transition-all hover:border-white/25 hover:text-white active:scale-95"
+                className="flex h-10 w-10 sm:h-auto sm:w-auto items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] sm:bg-transparent px-3 py-1.5 font-mono text-xs sm:text-[10px] text-zinc-300 sm:text-zinc-400 hover:border-white/25 hover:text-white active:scale-95 transition-all"
                 style={{ transitionDuration: '200ms', transitionTimingFunction: EASE }}
               >
-                esc
+                <span className="sm:hidden text-sm">✕</span>
+                <span className="hidden sm:inline">esc</span>
               </button>
             </div>
           </div>
 
-          {/* Messages */}
-          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
+          {/* Messages Stream */}
+          <div
+            ref={scrollRef}
+            className="flex-1 space-y-3 overflow-y-auto px-4 py-4 overscroll-contain"
+          >
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
@@ -234,16 +268,16 @@ export default function ChatWidget({ className = '', siteKey }: ChatWidgetProps)
             )}
           </div>
 
-          {/* Quick questions — only shown once verified */}
+          {/* Quick Questions Carousel */}
           {verified && (
-            <div className="flex gap-1.5 overflow-x-auto border-t border-white/[0.06] px-4 py-2.5 [scrollbar-width:none]">
+            <div className="flex gap-2 overflow-x-auto border-t border-white/[0.06] px-4 py-2.5 [scrollbar-width:none] touch-pan-x overscroll-contain">
               {QUICK_QUESTIONS.map((q) => (
                 <button
                   key={q}
                   type="button"
                   onClick={() => void send(q)}
                   disabled={streaming}
-                  className="whitespace-nowrap rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[10px] text-zinc-400 transition-all hover:border-[#e11d48]/50 hover:text-white active:scale-95 disabled:opacity-40"
+                  className="whitespace-nowrap rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 font-mono text-[11px] sm:text-[10px] text-zinc-300 sm:text-zinc-400 transition-all hover:border-[#e11d48]/50 hover:text-white active:scale-95 disabled:opacity-40"
                   style={{ transitionDuration: '200ms', transitionTimingFunction: EASE }}
                 >
                   {q}
@@ -252,8 +286,11 @@ export default function ChatWidget({ className = '', siteKey }: ChatWidgetProps)
             </div>
           )}
 
-          {/* Input */}
-          <div className="flex items-center gap-2 border-t border-white/[0.06] px-3 py-3">
+          {/* Input Area with Safe Area Bottom Support */}
+          <div
+            className="flex items-center gap-2 border-t border-white/[0.06] px-4 py-3 bg-[#09090b]/80 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none"
+            style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))' }}
+          >
             <input
               type="text"
               value={input}
@@ -262,7 +299,9 @@ export default function ChatWidget({ className = '', siteKey }: ChatWidgetProps)
               disabled={streaming || !verified}
               placeholder={verified ? 'Ask about a project…' : 'Verifying session…'}
               aria-label="Ask a question about SnapLabs projects"
-              className="min-w-0 flex-1 rounded-xl border border-white/10 bg-black/40 px-3.5 py-2.5 text-xs text-zinc-200 placeholder:text-zinc-600 outline-none transition-colors focus:border-[#e11d48]/60 disabled:opacity-50"
+              enterKeyHint="send"
+              autoComplete="off"
+              className="min-w-0 flex-1 rounded-xl border border-white/10 bg-black/40 px-3.5 py-2.5 text-base sm:text-xs text-zinc-200 placeholder:text-zinc-600 outline-none transition-colors focus:border-[#e11d48]/60 disabled:opacity-50 min-h-[44px]"
               style={{ transitionDuration: '200ms', transitionTimingFunction: EASE }}
             />
             <button
@@ -270,7 +309,7 @@ export default function ChatWidget({ className = '', siteKey }: ChatWidgetProps)
               onClick={() => void send(input)}
               disabled={streaming || !input.trim() || !verified}
               aria-label="Send message"
-              className="rounded-xl bg-[#e11d48] px-4 py-2.5 text-[10px] font-semibold uppercase tracking-widest text-white shadow-md shadow-[#e11d48]/20 transition-all hover:bg-[#be123c] active:scale-95 disabled:opacity-40"
+              className="rounded-xl bg-[#e11d48] px-4 py-2.5 text-xs sm:text-[10px] font-semibold uppercase tracking-widest text-white shadow-md shadow-[#e11d48]/20 transition-all hover:bg-[#be123c] active:scale-95 disabled:opacity-40 min-h-[44px] flex items-center justify-center"
               style={{ transitionDuration: '200ms', transitionTimingFunction: EASE }}
             >
               Send
@@ -279,13 +318,23 @@ export default function ChatWidget({ className = '', siteKey }: ChatWidgetProps)
         </div>
       )}
 
-      {/* Launcher */}
+      {/* Floating Launcher Button */}
+      {/* On mobile: visible when chat is closed, hidden when chat is open (so it doesn't obstruct full-screen view) */}
+      {/* On desktop: visible in both states, acts as toggle */}
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? 'Close chat' : 'Open chat'}
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-[#e11d48] text-white shadow-lg shadow-[#e11d48]/25 transition-all hover:bg-[#be123c] active:scale-95"
-        style={{ transitionDuration: '200ms', transitionTimingFunction: EASE }}
+        aria-expanded={open}
+        className={`fixed z-40 h-14 w-14 items-center justify-center rounded-full bg-[#e11d48] text-white shadow-lg shadow-[#e11d48]/30 transition-all hover:bg-[#be123c] active:scale-95 ${
+          open ? 'hidden sm:flex' : 'flex'
+        } ${className}`}
+        style={{
+          bottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))',
+          right: 'calc(1.5rem + env(safe-area-inset-right, 0px))',
+          transitionDuration: '200ms',
+          transitionTimingFunction: EASE,
+        }}
       >
         {open ? (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -297,6 +346,6 @@ export default function ChatWidget({ className = '', siteKey }: ChatWidgetProps)
           </svg>
         )}
       </button>
-    </div>
+    </>
   );
 }

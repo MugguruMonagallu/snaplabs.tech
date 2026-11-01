@@ -314,7 +314,7 @@ export default function CrtTerminal({ className = '', initialMode = 'green' }: C
     const layout = () => {
       startY = height * 0.09;
       lineHeight = (height * 0.82) / Math.max(TELEMETRY_LOG.length, 1);
-      fontSize = Math.max(10.5, Math.min(lineHeight * 0.82, (width * 0.94) / (Math.max(maxChars, 1) * 0.62)));
+      fontSize = Math.max(9.5, Math.min(lineHeight * 0.82, (width * 0.90) / (Math.max(maxChars, 1) * 0.62)));
       textContext.font = `600 ${fontSize.toFixed(1)}px 'Geist Mono', ui-monospace, 'JetBrains Mono', monospace`;
       charWidth = textContext.measureText('M').width || fontSize * 0.6;
     };
@@ -331,13 +331,13 @@ export default function CrtTerminal({ className = '', initialMode = 'green' }: C
 
       let remaining = reveal;
       let y = startY;
-      caretX = Math.floor((width - maxChars * charWidth) / 2);
+      caretX = Math.max(14, Math.floor((width - maxChars * charWidth) / 2));
       caretY = startY;
 
       for (const line of TELEMETRY_LOG) {
         const len = lineLength(line);
         const visibleInLine = reveal === Infinity ? Infinity : Math.min(remaining, len);
-        let x = Math.floor((width - maxChars * charWidth) / 2);
+        let x = Math.max(14, Math.floor((width - maxChars * charWidth) / 2));
         let drawn = 0;
 
         for (const item of line) {
