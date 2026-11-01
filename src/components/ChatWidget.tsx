@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { GREETING } from '../lib/chat/prompts';
+import { WELCOME_MESSAGE, PROMPT_QUESTION, GREETING } from '../lib/chat/prompts';
+import Turnstile from './Turnstile';
 
 export interface ChatWidgetProps {
   className?: string;
+  siteKey?: string;
 }
 
 interface ChatMessageView {
@@ -19,10 +21,14 @@ const QUICK_QUESTIONS = [
 
 const EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';
 
-export default function ChatWidget({ className = '' }: ChatWidgetProps) {
+export default function ChatWidget({ className = '', siteKey }: ChatWidgetProps) {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessageView[]>([
-    { role: 'assistant', content: GREETING },
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [verified, setVerified] = useState(() => !siteKey);
+  const [resetSignal, setResetSignal] = useState(0);
+
+  const [messages, setMessages] = useState<ChatMessageView[]>(() => [
+    { role: 'assistant', content: siteKey ? WELCOME_MESSAGE : GREETING },
   ]);
   const [input, setInput] = useState('');
   const [streaming, setStreaming] = useState(false);
@@ -34,7 +40,7 @@ export default function ChatWidget({ className = '' }: ChatWidgetProps) {
   useEffect(() => {
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [messages, open]);
+  }, [messages, open, verified]);
 
   // Abort any in-flight request when the panel closes or unmounts.
   useEffect(() => {
@@ -43,9 +49,18 @@ export default function ChatWidget({ className = '' }: ChatWidgetProps) {
     };
   }, []);
 
+  function handleTurnstileSuccess(token: string) {
+    setTurnstileToken(token);
+    setVerified(true);
+    setMessages((prev) => [
+      ...prev,
+      { role: 'assistant', content: PROMPT_QUESTION },
+    ]);
+  }
+
   async function send(text: string) {
     const query = text.trim();
-    if (!query || streaming) return;
+    if (!query || streaming || !verified) return;
     setError(null);
     setInput('');
     const nextMessages: ChatMessageView[] = [...messages, { role: 'user', content: query }];
@@ -57,15 +72,28 @@ export default function ChatWidget({ className = '' }: ChatWidgetProps) {
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: {
+          'content-type': 'application/json',
+          ...(turnstileToken ? { 'cf-turnstile-token': turnstileToken } : {}),
+        },
         body: JSON.stringify({
           messages: nextMessages.map((m) => ({ role: m.role, content: m.content })),
+          turnstileToken: turnstileToken ?? undefined,
         }),
         signal: controller.signal,
       });
+
+      if (res.status === 403) {
+        setResetSignal((s) => s + 1);
+        setVerified(false);
+        setTurnstileToken(null);
+        throw new Error('Security verification failed. Please try again.');
+      }
+
       if (!res.ok || !res.body) {
         throw new Error(`request failed: ${res.status}`);
       }
+
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
@@ -102,7 +130,13 @@ export default function ChatWidget({ className = '' }: ChatWidgetProps) {
         }
       }
       if (!assistantText) {
-        setMessages([...nextMessages, { role: 'assistant', content: 'Something went wrong. Try again, or email contact@snaplabs.tech.' }]);
+        setMessages([
+          ...nextMessages,
+          {
+            role: 'assistant',
+            content: 'Something went wrong. Try again, or email contact@snaplabs.tech.',
+          },
+        ]);
       }
     } catch (err) {
       if ((err as Error).name === 'AbortError') return;
@@ -172,26 +206,51 @@ export default function ChatWidget({ className = '' }: ChatWidgetProps) {
                 </div>
               </div>
             ))}
+
+            {/* Turnstile verification indicator */}
+            {!verified && siteKey && (
+              <div className="flex flex-col gap-2 rounded-xl bg-white/[0.03] border border-white/[0.06] p-3 text-[11px] font-mono text-zinc-400">
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full border-2 border-emerald-400 border-t-transparent animate-spin" />
+                  <span>Verifying session security…</span>
+                </div>
+                <Turnstile
+                  siteKey={siteKey}
+                  onToken={handleTurnstileSuccess}
+                  onError={() => setError('Security verification failed. Please refresh the page.')}
+                  onExpire={() => {
+                    setVerified(false);
+                    setTurnstileToken(null);
+                    setResetSignal((s) => s + 1);
+                  }}
+                  resetSignal={resetSignal}
+                  className="mt-1"
+                />
+              </div>
+            )}
+
             {error && (
               <div className="font-mono text-[10px] text-amber-400/90">{error}</div>
             )}
           </div>
 
-          {/* Quick questions */}
-          <div className="flex gap-1.5 overflow-x-auto border-t border-white/[0.06] px-4 py-2.5 [scrollbar-width:none]">
-            {QUICK_QUESTIONS.map((q) => (
-              <button
-                key={q}
-                type="button"
-                onClick={() => void send(q)}
-                disabled={streaming}
-                className="whitespace-nowrap rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[10px] text-zinc-400 transition-all hover:border-[#e11d48]/50 hover:text-white active:scale-95 disabled:opacity-40"
-                style={{ transitionDuration: '200ms', transitionTimingFunction: EASE }}
-              >
-                {q}
-              </button>
-            ))}
-          </div>
+          {/* Quick questions — only shown once verified */}
+          {verified && (
+            <div className="flex gap-1.5 overflow-x-auto border-t border-white/[0.06] px-4 py-2.5 [scrollbar-width:none]">
+              {QUICK_QUESTIONS.map((q) => (
+                <button
+                  key={q}
+                  type="button"
+                  onClick={() => void send(q)}
+                  disabled={streaming}
+                  className="whitespace-nowrap rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[10px] text-zinc-400 transition-all hover:border-[#e11d48]/50 hover:text-white active:scale-95 disabled:opacity-40"
+                  style={{ transitionDuration: '200ms', transitionTimingFunction: EASE }}
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Input */}
           <div className="flex items-center gap-2 border-t border-white/[0.06] px-3 py-3">
@@ -200,8 +259,8 @@ export default function ChatWidget({ className = '' }: ChatWidgetProps) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={onKeyDown}
-              disabled={streaming}
-              placeholder="Ask about a project…"
+              disabled={streaming || !verified}
+              placeholder={verified ? 'Ask about a project…' : 'Verifying session…'}
               aria-label="Ask a question about SnapLabs projects"
               className="min-w-0 flex-1 rounded-xl border border-white/10 bg-black/40 px-3.5 py-2.5 text-xs text-zinc-200 placeholder:text-zinc-600 outline-none transition-colors focus:border-[#e11d48]/60 disabled:opacity-50"
               style={{ transitionDuration: '200ms', transitionTimingFunction: EASE }}
@@ -209,7 +268,7 @@ export default function ChatWidget({ className = '' }: ChatWidgetProps) {
             <button
               type="button"
               onClick={() => void send(input)}
-              disabled={streaming || !input.trim()}
+              disabled={streaming || !input.trim() || !verified}
               aria-label="Send message"
               className="rounded-xl bg-[#e11d48] px-4 py-2.5 text-[10px] font-semibold uppercase tracking-widest text-white shadow-md shadow-[#e11d48]/20 transition-all hover:bg-[#be123c] active:scale-95 disabled:opacity-40"
               style={{ transitionDuration: '200ms', transitionTimingFunction: EASE }}

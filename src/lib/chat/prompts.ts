@@ -43,4 +43,8 @@ export const REFUSAL_FILTERED =
 export const REFUSAL_UNAVAILABLE =
   "The chat service isn't available right now. Try again in a moment, or email contact@snaplabs.tech.";
 
-export const GREETING = `Hi! I'm the SnapLabs assistant — ask me anything about our projects: RERA Sentinel, TV Show Tracker, and Family Vault. What would you like to know?`;
+export const WELCOME_MESSAGE = `Hi! I'm the SnapLabs assistant — ask me anything about our projects: RERA Sentinel, TV Show Tracker, and Family Vault.`;
+
+export const PROMPT_QUESTION = `What would you like to know?`;
+
+export const GREETING = `${WELCOME_MESSAGE} ${PROMPT_QUESTION}`;

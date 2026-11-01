@@ -13,6 +13,7 @@ import {
   ValidationError,
   RateLimitError,
 } from '../../lib/chat/ratelimit';
+import { verifyTurnstileToken } from '../../lib/chat/turnstile';
 import { REFUSAL_UNAVAILABLE } from '../../lib/chat/prompts';
 
 export const prerender = false;
@@ -46,12 +47,23 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const ip = clientAddress || forwarded?.split(',')[0]?.trim() || 'unknown';
 
   let messages;
+  let turnstileToken: string | undefined;
   try {
-    const body = await request.json();
+    const body = (await request.json()) as Record<string, unknown>;
     messages = validateMessages(body);
+    turnstileToken =
+      typeof body.turnstileToken === 'string'
+        ? body.turnstileToken
+        : request.headers.get('cf-turnstile-token') ?? undefined;
   } catch (err) {
     if (err instanceof ValidationError) return jsonError(400);
     return jsonError(400);
+  }
+
+  // Cloudflare Turnstile bot verification
+  const turnstileCheck = await verifyTurnstileToken(turnstileToken, ip);
+  if (!turnstileCheck.success) {
+    return jsonError(403, { error: turnstileCheck.error ?? 'Security verification failed.' });
   }
 
   try {

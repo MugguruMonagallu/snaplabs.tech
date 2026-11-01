@@ -11,6 +11,8 @@ const {
   title = 'SnapLabs — Independent Engineering | Purpose Built Software',
   description = 'An independent engineering project by three friends building spatial GIS tools, zero knowledge encrypted storage, and developer workflows.',
 } = Astro.props;
+
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? import.meta.env.TURNSTILE_SITE_KEY ?? '';
 ---
 
 <!doctype html>
@@ -81,6 +83,6 @@ const {
       </div>
     </footer>
 
-    <ChatWidget client:load />
+    <ChatWidget client:load siteKey={turnstileSiteKey} />
   </body>
 </html>
