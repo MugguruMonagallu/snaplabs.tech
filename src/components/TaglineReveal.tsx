@@ -60,12 +60,12 @@ export default function TaglineReveal({ className = '' }: TaglineRevealProps) {
         The Founding Mission
       </div>
 
-      <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl font-light tracking-tight leading-[1.2] max-w-4xl mx-auto text-balance">
+      <h2 className="font-serif text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-[1.25] sm:leading-[1.2] max-w-4xl mx-auto text-balance">
         <div>
           {words.slice(0, splitIndex).map((word, i) => (
             <span
               key={i}
-              className="inline-block mx-1.5 transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              className="inline-block mx-1 sm:mx-1.5 transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
               style={{
                 color: i <= activeWordIndex ? '#ffffff' : 'rgba(255, 255, 255, 0.28)',
               }}
@@ -80,7 +80,7 @@ export default function TaglineReveal({ className = '' }: TaglineRevealProps) {
             return (
               <span
                 key={actualIndex}
-                className="inline-block mx-1.5 transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                className="inline-block mx-1 sm:mx-1.5 transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
                 style={{
                   color: actualIndex <= activeWordIndex ? '#ffffff' : 'rgba(255, 255, 255, 0.28)',
                 }}

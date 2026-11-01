@@ -10,6 +10,11 @@
     --crimson-glow: rgba(225, 29, 72, 0.25);
   }
 
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
     background-color: var(--bg-main);
     color: #e4e4e7;
@@ -17,6 +22,19 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+  }
+
+  input, textarea, select {
+    font-size: 16px;
+  }
+
+  button, a, [role="button"] {
+    touch-action: manipulation;
+  }
+
+  button, [role="button"] {
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   h1, h2, h3, h4 {
@@ -50,10 +68,12 @@
   transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), border-color 300ms ease, box-shadow 300ms ease;
 }
 
-.editorial-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.18);
-  box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.6);
+@media (hover: hover) and (pointer: fine) {
+  .editorial-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.6);
+  }
 }
 
 .editorial-card:active {
