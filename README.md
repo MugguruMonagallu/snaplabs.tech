@@ -21,10 +21,16 @@ This repository powers the official website and portfolio at [snaplabs.tech](htt
 
 ## 🛠️ Tech Stack & Architecture
 
-- **Core Framework:** [Astro 5](https://docs.astro.build) (Static Site Generation with Content Layer API)
+- **Core Framework:** [Astro 5](https://docs.astro.build) (Static Site Generation + Server Endpoints via `@astrojs/cloudflare`)
 - **Interactive Islands:** [React 19](https://react.dev) via `@astrojs/react`
   - In-tree WebGL Phosphor CRT Telemetry Terminal ([`CrtTerminal.tsx`](./src/components/CrtTerminal.tsx))
   - Scroll-linked kinetic tagline reveal ([`TaglineReveal.tsx`](./src/components/TaglineReveal.tsx))
+  - Grounded AI Assistant Island with Turnstile bot barrier ([`ChatWidget.tsx`](./src/components/ChatWidget.tsx), [`Turnstile.tsx`](./src/components/Turnstile.tsx))
+- **AI Chatbot Architecture:**
+  - **Level 1 Decision Guardrail:** Single forward-pass classification using `/v1/systemone` with `clef-flash` ([`decision.ts`](./src/lib/chat/decision.ts)). Evaluates domain scope and prompt threats without autoregressive token generation.
+  - **Level 2 Grounded Answer Model:** Native progressive Server-Sent Events (SSE) streaming ([`answer.ts`](./src/lib/chat/answer.ts)) answering strictly from project markdown knowledge base without external AI SDK dependencies.
+  - **Bot Mitigation Barrier:** Cloudflare Turnstile verification gate unlocking interaction only after session validation, with 30-minute token caching for seamless multi-turn conversations.
+  - **Provider Rate Throttler:** In-flight token bucket queue capping traffic at 30 RPM, streaming live queue notices to clients during burst traffic without connection drops.
 - **Styling Engine:** [Tailwind CSS v4](https://tailwindcss.com) via `@tailwindcss/vite`
 - **Component Variants:** [`class-variance-authority` (cva)](https://cva.style) + [`clsx`](https://github.com/lukeed/clsx)
 - **Typography:**
@@ -44,28 +50,45 @@ snaplabs.tech/
 │       └── ci.yml            # Automated typecheck & build CI pipeline
 ├── docs/
 │   ├── adr/                  # Architecture Decision Records
-│   │   └── 0001-react-and-crt-telemetry-island.md
+│   │   ├── 0001-react-and-crt-telemetry-island.md
+│   │   ├── 0002-system-one-decision-guardrail.md
+│   │   └── 0003-turnstile-bot-mitigation-and-rate-throttler.md
 │   └── agents/               # Linear, triage labels, and domain skill configs
 ├── public/
 │   ├── favicon.svg
 │   └── team/                 # Member avatars (Nikhil, Prem, Sree Teja)
 ├── src/
 │   ├── components/
+│   │   ├── ChatWidget.tsx    # Multi-turn progressive SSE chat assistant
 │   │   ├── CrtTerminal.tsx   # Pure WebGL CRT phosphor telemetry island
 │   │   ├── ProjectCard.astro # Variant-driven project card (Featured & Grid)
-│   │   └── TaglineReveal.tsx # Scroll-linked kinetic typography reveal
+│   │   ├── TaglineReveal.tsx # Scroll-linked kinetic typography reveal
+│   │   └── Turnstile.tsx     # Cloudflare Turnstile client verification component
 │   ├── content/
 │   │   └── projects/         # Markdown content collections for lab projects
 │   │       ├── family-vault.md
 │   │       ├── rera-sentinel.md
 │   │       └── tv-show-tracker.md
 │   ├── layouts/
-│   │   └── Layout.astro      # Main glassmorphic layout, fonts, header & footer
+│   │   └── Layout.astro      # Main glassmorphic layout, fonts, header, footer & chat widget
+│   ├── lib/
+│   │   └── chat/             # Server-side chatbot engine & pipeline
+│   │       ├── answer.ts     # Level 2 grounded answer streaming
+│   │       ├── decision.ts   # Level 1 System One decision guardrail client
+│   │       ├── guardrail.ts  # Fallback & combined guardrail dispatch
+│   │       ├── pipeline.ts   # SSE response streaming pipeline & safety checks
+│   │       ├── prompts.ts    # System prompts & canned responses
+│   │       ├── provider.ts   # Multi-format provider streaming (OpenAI / Anthropic)
+│   │       ├── ratelimit.ts  # In-flight 30 RPM token-bucket queue
+│   │       └── turnstile.ts  # Server-side Turnstile verification & session cache
 │   ├── pages/
+│   │   ├── api/
+│   │   │   └── chat.ts       # POST /api/chat SSE endpoint
 │   │   └── index.astro       # Editorial homepage with telemetry & team sections
 │   ├── styles/
 │   │   └── global.css        # Tailwind v4 import & custom design tokens
 │   └── content.config.ts     # Zod schema definitions for Content Layer
+├── .env.example              # Environment variables template for Chat & Turnstile
 ├── AGENTS.md                 # Agent instructions & repo conventions
 ├── DESIGN.md                 # Design system specifications & component guidelines
 ├── GLOSSARY.md               # Domain terminology and vocabulary definitions
@@ -91,7 +114,34 @@ cd snaplabs.tech
 
 # Install dependencies
 npm install
+
+# Copy environment variables template
+cp .env.example .env
 ```
+
+### Environment Configuration
+
+Configure `.env` for the optional AI chat assistant and Turnstile bot protection:
+
+```bash
+# Level 1 Decision Guardrail (/v1/systemone API with clef-flash)
+CHAT_DECISION_API_BASE_URL=https://api.experientiallabs.ai/v1/systemone
+CHAT_DECISION_API_KEY=your_decision_api_key
+CHAT_DECISION_MODEL=clef-flash
+
+# Level 2 Grounded Answer Model
+CHAT_API_BASE_URL=https://integrate.api.nvidia.com/v1
+CHAT_API_FORMAT=openai
+CHAT_API_KEY=your_chat_api_key
+CHAT_ANSWER_MODEL=meta/llama-3.1-70b-instruct
+
+# Cloudflare Turnstile Bot Mitigation (Optional in dev; bypassed if omitted)
+TURNSTILE_SITE_KEY=0x4AAAAAAA...
+PUBLIC_TURNSTILE_SITE_KEY=0x4AAAAAAA...
+TURNSTILE_SECRET_KEY=0x4AAAAAAA...
+```
+
+*(If `TURNSTILE_SECRET_KEY` is not set, Turnstile verification is automatically bypassed for local development).*
 
 ### Development
 

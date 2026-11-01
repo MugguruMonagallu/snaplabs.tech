@@ -47,9 +47,9 @@ This design system synthesizes **Emil Kowalski's Design Engineering philosophy**
 
 - **Display & Headings:** `Cormorant Garamond`, Georgia, serif
   - Classic high-contrast editorial serif with graceful italics and tall ascenders.
-- **Interface & Body:** `Plus Jakarta Sans`, -apple-system, sans-serif
+- **Interface & Body:** `Geist`, -apple-system, BlinkMacSystemFont, sans-serif
   - Geometric, highly legible screen sans for descriptions, buttons, and navigation.
-- **Telemetry & Metadata:** `JetBrains Mono`, `ui-monospace`, monospace
+- **Telemetry & Metadata:** `Geist Mono`, `ui-monospace`, `JetBrains Mono`, monospace
   - Crisp, fixed-width numerals, tags, and telemetry data.
 
 ### Typographic Patterns
@@ -58,9 +58,9 @@ This design system synthesizes **Emil Kowalski's Design Engineering philosophy**
   - Font size: `0.75rem` (`12px`), uppercase, `tracking: 0.16em`, color: `#a1a1aa`.
   - Prefixed with a `1.5rem` horizontal crimson line (`background-color: var(--crimson)`).
 - **Hero Title Rhythm:**
-  - *Line 1:* `font-serif text-5xl font-light italic text-zinc-300` (e.g., "Focused")
-  - *Line 2:* `font-serif text-8xl font-bold tracking-tight uppercase text-white` (e.g., "SOFTWARE")
-  - *Line 3:* `font-serif text-7xl font-light tracking-widest text-zinc-600 uppercase` (e.g., "STUDIO")
+  - *Line 1:* `font-serif text-5xl font-light italic text-zinc-300` (e.g., "Independent")
+  - *Line 2:* `font-serif text-8xl font-bold tracking-tight uppercase text-white` (e.g., "ENGINEERING")
+  - *Line 3:* `font-serif text-7xl font-light tracking-widest text-zinc-600 uppercase` (e.g., "TRIO")
 - **Section Titles:** `font-serif text-3xl sm:text-5xl font-normal text-white tracking-tight`
 - **Body Text:** `text-sm text-zinc-400 leading-relaxed font-normal`
 
@@ -111,16 +111,28 @@ This design system synthesizes **Emil Kowalski's Design Engineering philosophy**
 - 4-column cards categorizing engineering competencies.
 - Crimson domain label, serif category title, explanation, and tag list.
 
-### 6. Team Collective Cards (3 Members)
+### 6. Team Cards (3 Members)
 - Clean avatar frame (`rounded-2xl` glass badge, subtle border, object-cover).
 - Name in serif font, designation in crimson uppercase monospace.
 - Direct bio paragraph + `github ↗` link.
-- **Rule:** Never link specific projects to individuals; represent the studio as a cohesive collective.
+- **Rule:** Never link specific projects to individuals; represent SnapLabs as an independent engineering trio.
 
 ### 7. Collaboration CTA Banner
 - Elevated rounded-3xl container with ambient lighting.
 - Serif headline + clear value proposition.
 - Crimson primary button (`#e11d48`) with hover brightening (`#be123c`) and tactile click.
+
+### 8. Interactive AI Assistant Island (`ChatWidget.tsx` & `Turnstile.tsx`)
+- **Trigger Beacon:** Floating circular crimson badge (`#e11d48`, hover `#be123c`, active `scale-95`, pulse dot) anchored bottom-right.
+- **Floating Panel:** Dark glass obsidian container (`rgba(14, 14, 18, 0.95)` with `backdrop-blur-2xl` and `border-white/[0.08]`). Features custom GPU entrance transition (`@keyframes chat-in` over `220ms` using `transform` and `opacity`).
+- **Telemetry Header:** Top bar displaying uppercase monospace category metadata (`ASK ABOUT OUR PROJECTS`), live status indicator (`online`), and keyboard affordance (`esc`).
+- **Bot Verification Gate:** Embedded Turnstile container rendered with a subtle dark theme. Displays animated spinner and session security indicator (`"Verifying session security…"`) while locking input and chips until verified.
+- **Message Streams:**
+  - *Assistant:* Obsidian translucent card (`bg-white/[0.04] border border-white/[0.06] text-zinc-300`). Supports real-time progressive SSE token streaming and post-hoc safety replacement.
+  - *User:* Right-aligned crimson-tinted bubble (`bg-[#e11d48]/15 border border-[#e11d48]/30 text-rose-100`).
+  - *Quick Question Chips:* Rounded pill buttons (`rounded-full bg-white/[0.04] border-white/10 hover:border-[#e11d48]/50 active:scale-95`) populated only after verification.
+  - *Queue Notice:* Ambient amber indicator (`border-amber-500/20 bg-amber-500/5 text-amber-300/80`) alerting user when request is held in-flight during upstream rate throttle.
+- **Action Bar:** Integrated input field (`bg-black/40 border-white/10 focus:border-[#e11d48]/60`) with uppercase tactile `SEND` button (`active:scale-95`).
 
 ---
 
