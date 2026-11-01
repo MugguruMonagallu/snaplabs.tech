@@ -9,8 +9,8 @@
     "dev": "astro dev",
     "check": "astro check",
     "build": "astro check && astro build",
-    "start": "node ./dist/server/entry.mjs",
-    "preview": "node ./dist/server/entry.mjs",
+    "start": "HOST=0.0.0.0 node ./dist/server/entry.mjs",
+    "preview": "HOST=0.0.0.0 node ./dist/server/entry.mjs",
     "astro": "astro"
   },
   "dependencies": {
