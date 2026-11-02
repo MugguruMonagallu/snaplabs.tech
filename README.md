@@ -103,7 +103,7 @@ snaplabs.tech/
 
 ### Prerequisites
 
-- Node.js `^22.23.4` or higher
+- Node.js `v24 LTS` or higher
 - npm (or pnpm / bun)
 
 ### Installation
@@ -126,15 +126,15 @@ Configure `.env` for the optional AI chat assistant and Turnstile bot protection
 
 ```bash
 # Level 1 Decision Guardrail (/v1/systemone API with clef-flash)
-CHAT_DECISION_API_BASE_URL=https://api.experientiallabs.ai/v1/systemone
+CHAT_DECISION_API_BASE_URL=https://api.example.ai/v1/systemone
 CHAT_DECISION_API_KEY=your_decision_api_key
-CHAT_DECISION_MODEL=clef-flash
+CHAT_DECISION_MODEL=decision_model_name
 
 # Level 2 Grounded Answer Model
-CHAT_API_BASE_URL=https://integrate.api.nvidia.com/v1
+CHAT_API_BASE_URL=https://api.example.ai/v1
 CHAT_API_FORMAT=openai
 CHAT_API_KEY=your_chat_api_key
-CHAT_ANSWER_MODEL=meta/llama-3.1-70b-instruct
+CHAT_ANSWER_MODEL=model_name
 
 # Cloudflare Turnstile Bot Mitigation (Optional in dev; bypassed if omitted)
 TURNSTILE_SITE_KEY=0x4AAAAAAA...
@@ -201,12 +201,6 @@ Optional extended markdown notes and architecture details.
 
 SnapLabs is built collaboratively by three friends:
 
-- **Nikhil Malisetty** — *Lead Systems & Frontend Architect*
-- **Prem Swaroop** — *Spatial Systems & Product Engineer*
-- **Sree Teja Gunda** — *Fullstack & Mobile Engineer*
-
----
-
-## 📜 License
-
-Licensed under the [MIT License](LICENSE).
+- **Nikhil Malisetty** — *Systems & Full-Stack Architect* ([GitHub](https://github.com/nikhilmalisetty) • [LinkedIn](https://www.linkedin.com/in/nikhilmalisetty/))
+- **Prem Swaroop** — *Quality & Systems Engineer* ([GitHub](https://github.com/akpremswaroop) • [LinkedIn](https://www.linkedin.com/in/akpremswaroop/))
+- **Sree Teja Gunda** — *Senior Backend & Cloud Engineer* ([GitHub](https://github.com/gundasreeteja) • [LinkedIn](https://www.linkedin.com/in/sreetejagunda/))
