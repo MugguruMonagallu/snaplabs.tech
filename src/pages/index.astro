@@ -15,24 +15,27 @@ const standardProjects = sortedProjects.filter((p) => p.id !== featuredProject.i
 const teamMembers = [
   {
     name: 'Nikhil Malisetty',
-    role: 'Systems & Frontend Architect',
-    image: '/team/nikhil.jpg',
-    bio: 'Engineer focused on resilient web applications, tactile UI ergonomics, and autonomous agent-driven development workflows.',
+    role: 'Systems & Full-Stack Architect',
+    image: '/team/nikhil.webp',
+    bio: 'Full-stack engineer focused on cross-platform mobile systems, resilient cloud architectures, and autonomous agent workflows.',
     github: 'https://github.com/nikhilmalisetty',
+    linkedin: 'https://www.linkedin.com/in/nikhilmalisetty/',
   },
   {
     name: 'Prem Swaroop',
-    role: 'Spatial Systems & Product Engineer',
-    image: '/team/prem.jpg',
-    bio: 'Engineer specializing in geospatial geometry, regulatory compliance pipelines, and high-integrity cloud architectures.',
+    role: 'Quality & Systems Engineer',
+    image: '/team/prem.webp',
+    bio: 'Systems and QA engineer specializing in large-scale test automation, infrastructure reliability, Python & ML, and spatial GIS pipelines.',
     github: 'https://github.com/akpremswaroop',
+    linkedin: 'https://www.linkedin.com/in/akpremswaroop/',
   },
   {
     name: 'Sree Teja Gunda',
-    role: 'Fullstack & Mobile Engineer',
-    image: '/team/sreeteja.jpg',
-    bio: 'Product engineer passionate about reactive interface patterns, cross-platform mobile apps, and developer productivity tooling.',
+    role: 'Senior Backend & Cloud Engineer',
+    image: '/team/sreeteja.webp',
+    bio: 'Senior engineer specializing in distributed microservices, cloud infrastructure, and API performance.',
     github: 'https://github.com/gundasreeteja',
+    linkedin: 'https://www.linkedin.com/in/sreetejagunda/',
   },
 ];
 
@@ -241,14 +244,26 @@ const capabilities = [
 
           <div class="pt-6 border-t border-white/[0.06] mt-6 flex justify-between items-center text-xs">
             <span class="text-zinc-500 font-mono text-[11px]">Core Engineer</span>
-            <a
-              href={member.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="font-mono text-zinc-400 hover:text-white transition-colors"
-            >
-              github ↗
-            </a>
+            <div class="flex items-center gap-3">
+              {member.linkedin && (
+                <a
+                  href={member.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-mono text-zinc-400 hover:text-white transition-colors"
+                >
+                  linkedin ↗
+                </a>
+              )}
+              <a
+                href={member.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-mono text-zinc-400 hover:text-white transition-colors"
+              >
+                github ↗
+              </a>
+            </div>
           </div>
         </article>
       ))}
