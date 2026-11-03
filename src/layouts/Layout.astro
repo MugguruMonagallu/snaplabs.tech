@@ -6,14 +6,110 @@ import HeaderNav from '../components/HeaderNav';
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  noindex?: boolean;
 }
 
 const {
   title = 'SnapLabs — Independent Engineering | Purpose Built Software',
-  description = 'An independent engineering project by three friends building spatial GIS tools, zero knowledge encrypted storage, and developer workflows.',
+  description = 'SnapLabs is an independent engineering trio building purpose-built software: spatial GIS compliance tools, zero-knowledge encrypted vaults, and agentic workflows.',
+  image = '/logo.png',
+  noindex = false,
 } = Astro.props;
 
+const siteURL = Astro.site ? Astro.site.toString() : 'https://snaplabs.tech';
+const canonicalURL = new URL(Astro.url.pathname, siteURL).href;
+const socialImageURL = new URL(image, siteURL).href;
+
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? import.meta.env.TURNSTILE_SITE_KEY ?? '';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': 'https://snaplabs.tech/#website',
+      url: 'https://snaplabs.tech',
+      name: 'SnapLabs',
+      description,
+      publisher: {
+        '@id': 'https://snaplabs.tech/#organization',
+      },
+    },
+    {
+      '@type': 'Organization',
+      '@id': 'https://snaplabs.tech/#organization',
+      name: 'SnapLabs',
+      url: 'https://snaplabs.tech',
+      logo: new URL('/logo.png', siteURL).href,
+      email: 'contact@snaplabs.tech',
+      sameAs: ['https://github.com/MugguruMonagallu'],
+      founder: [
+        {
+          '@type': 'Person',
+          name: 'Nikhil Malisetty',
+          jobTitle: 'Systems & Full-Stack Architect',
+          sameAs: [
+            'https://github.com/nikhilmalisetty',
+            'https://www.linkedin.com/in/nikhilmalisetty/',
+          ],
+        },
+        {
+          '@type': 'Person',
+          name: 'Prem Swaroop',
+          jobTitle: 'Quality & Systems Engineer',
+          sameAs: [
+            'https://github.com/akpremswaroop',
+            'https://www.linkedin.com/in/akpremswaroop/',
+          ],
+        },
+        {
+          '@type': 'Person',
+          name: 'Sree Teja Gunda',
+          jobTitle: 'Senior Backend & Cloud Engineer',
+          sameAs: [
+            'https://github.com/gundasreeteja',
+            'https://www.linkedin.com/in/sreetejagunda/',
+          ],
+        },
+      ],
+    },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': 'https://snaplabs.tech/#rera-sentinel',
+      name: 'RERA Sentinel',
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Web',
+      description: 'Automated cadastral compliance and geospatial buffer verification engine for real estate plots in Telangana.',
+      url: 'https://github.com/MugguruMonagallu/rera-admin',
+      creator: {
+        '@id': 'https://snaplabs.tech/#organization',
+      },
+    },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': 'https://snaplabs.tech/#family-vault',
+      name: 'Family Vault',
+      applicationCategory: 'SecurityApplication',
+      operatingSystem: 'Web',
+      description: 'Client-side zero-knowledge encrypted vault for sensitive family documents with multi-party consent.',
+      creator: {
+        '@id': 'https://snaplabs.tech/#organization',
+      },
+    },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': 'https://snaplabs.tech/#tv-show-tracker',
+      name: 'TV Show Tracker',
+      applicationCategory: 'EntertainmentApplication',
+      operatingSystem: 'Web, Mobile',
+      description: 'Cross-platform, low-latency release tracker for syndicated television and episodic series.',
+      creator: {
+        '@id': 'https://snaplabs.tech/#organization',
+      },
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -28,6 +124,37 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? import.met
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#09090b" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#09090b" />
     <meta name="color-scheme" content="dark" />
+
+    <!-- Crawlability, Canonical & Sitemap -->
+    {noindex ? (
+      <meta name="robots" content="noindex, nofollow" />
+    ) : (
+      <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    )}
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SnapLabs" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={socialImageURL} />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="1280" />
+    <meta property="og:image:alt" content="SnapLabs — Purpose Built Software" />
+
+    <!-- Twitter / X Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageURL} />
+    <meta name="twitter:image:alt" content="SnapLabs — Purpose Built Software" />
+
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
     <!-- Google Fonts: Cormorant Garamond (Editorial Display), Geist (Interface), Geist Mono (Telemetry) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

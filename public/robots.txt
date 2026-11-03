@@ -1,0 +1,7 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://snaplabs.tech/sitemap-index.xml
+Sitemap: https://snaplabs.tech/sitemap.xml
