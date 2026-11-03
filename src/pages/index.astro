@@ -221,7 +221,9 @@ const capabilities = [
               <div class="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl overflow-hidden bg-black/50 border border-white/15 p-1 flex-shrink-0 group-hover:border-white/30 transition-colors shadow-inner">
                 <img
                   src={member.image}
-                  alt={member.name}
+                  alt={`${member.name} — ${member.role} at SnapLabs`}
+                  width="512"
+                  height="512"
                   class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
                   loading="lazy"
                 />

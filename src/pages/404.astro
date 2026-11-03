@@ -1,0 +1,52 @@
+---
+export const prerender = true;
+
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="404 — Page Not Found | SnapLabs"
+  description="The requested route does not exist within the SnapLabs architecture."
+  noindex={true}
+>
+  <section class="min-h-[70vh] flex items-center justify-center px-6 py-24 relative overflow-hidden">
+    <!-- Ambient subtle background glow -->
+    <div class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#e11d48]/5 rounded-full blur-[140px] -z-10"></div>
+
+    <div class="editorial-card max-w-xl w-full rounded-3xl p-8 sm:p-12 text-center relative border border-white/10 shadow-2xl">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 mb-6">
+        <span class="w-2 h-2 rounded-full bg-[#e11d48] animate-pulse"></span>
+        <span class="text-[11px] font-mono text-zinc-400 uppercase tracking-widest">
+          ERR_404_ROUTE_NOT_FOUND
+        </span>
+      </div>
+
+      <h1 class="font-serif text-4xl sm:text-6xl font-light text-white tracking-tight mb-4">
+        Lost in the Architecture
+      </h1>
+
+      <p class="text-sm sm:text-base text-zinc-400 leading-relaxed mb-8 max-w-md mx-auto">
+        The coordinate you requested does not map to any active system or telemetry stream.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="/"
+          class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#e11d48] hover:bg-[#be123c] text-white text-xs font-semibold uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-[#e11d48]/25 text-center min-h-[44px] flex items-center justify-center"
+        >
+          Return to Base
+        </a>
+        <a
+          href="/#projects"
+          class="w-full sm:w-auto px-6 py-3.5 rounded-xl border border-white/10 hover:border-white/25 text-zinc-300 hover:text-white text-xs font-semibold uppercase tracking-widest transition-all active:scale-95 hover:bg-white/[0.03] text-center min-h-[44px] flex items-center justify-center font-mono"
+        >
+          View Shipped Systems ↓
+        </a>
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-white/[0.06] text-[11px] font-mono text-zinc-500">
+        Status: 404 Not Found · Host: snaplabs.tech
+      </div>
+    </div>
+  </section>
+</Layout>
